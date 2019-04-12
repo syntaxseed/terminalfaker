@@ -63,8 +63,14 @@
       commands.hello = {
           about:  "Greet the user with a message.",
           exe:  function(args) {
-            if(args.length < 2) return "<p>Hello. Why don't you tell me your name?</p>";
-            return "Hello " + args[1];
+            if(args.length < 2){
+                return "Hello. Why don't you tell me your name?";
+            }
+            var name = "";
+            for(var i = 1; i< args.length; i++){
+                name += args[i] + " ";
+            }
+            return "Hello " + name.trim();
           }
       };
 
@@ -74,9 +80,9 @@
       commands.help = {
           about: "Show a list of available commands.",
           exe: function(args) {
-            var output = "<div>";
-            if(args.length == 2 && args[0] && args[0] in commands) {
-                output +=  "<strong>"+args[1]+"</strong>: "+ commands[args[1]].about +"";
+            var output = "";
+            if(args.length == 2 && args[1] && args[1].toLowerCase() in commands) {
+                output +=  "<strong>"+args[1].toLowerCase()+"</strong>: "+ commands[args[1].toLowerCase()].about +"";
             }else{
                 output += "TERM bash, version "+version+"-release (x86_64-pc-linux-gnu)<br>These shell commands are defined internally.  Type 'help' to see this list.<br>Type `help name' to find out more about the function 'name'.<br><br>";
                 output += "";
@@ -85,7 +91,7 @@
                     output += "<strong>"+cName+"</strong>&nbsp;&nbsp;&nbsp;";
                 });
             }
-            output += "<br><br></div>";
+            output += "<br><br>";
             return output;
           }
       };

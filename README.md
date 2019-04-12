@@ -101,8 +101,6 @@ terminal.init(document.getElementById("terminal"), commands);
 ```
 and we're done. We have a terminal that can greet the user :)
 
-### A full example
-The code for the [live demo](http://avgp.github.io/terminal.js) lives in index.html and another example is at [my website](http://www.geekonaut.de/terminal.html) and [its github repository](https://github.com/avgp/avgp.github.com) in ``console.html`` and ``javascripts/terminal.js``.
 
 # License
 MIT License - basically: Do whatever you feel like, but don't sue me when it blows up.

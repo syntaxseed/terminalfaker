@@ -28,7 +28,7 @@ var Terminal = (function() {
 
 
     var runCommand = function(terminal, cmd, args) {
-        terminal.innerHTML += (self.commands[cmd].exe(args));
+        terminal.innerHTML += "<div>" + (self.commands[cmd].exe(args)) + "</div>";
     };
 
     var updateHistory = function(cmd) {
@@ -115,7 +115,8 @@ var Terminal = (function() {
             var prompt = event.target;
             if(event.keyCode != 13) return false;
 
-            var input = prompt.textContent.split(" ");
+            var enteredComand = prompt.textContent.trim();
+            var input = enteredComand.split(" ");
             if(input[0]){
                 if(input[0].toLowerCase() in self.commands) {
                     runCommand(elem, input[0].toLowerCase(), input);
