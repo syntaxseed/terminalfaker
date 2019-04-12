@@ -128,11 +128,13 @@ Note that this will over-write any text already in the element with id "boot".
 
 ## A Mock Filesystem
 
+![Basic Filesystem](media/screenshot2.png)
+
 A simulated filesystem is initialized from the default content found in js/filesystem.js. Basic navigation around the filesystem is available. You can edit this file to customize the contents.
 
 ## Advanced Example
 
-![Logo](media/screenshot1.png)
+![Screenshot](media/screenshot1.png)
 
 To see a full example including loading in system commands and the nicer boot message text, see the source of index.html.
 
