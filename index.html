@@ -35,19 +35,19 @@
   <body>
     <h1><a href="https://github.com/syntaxseed/terminalfaker">Terminal Faker Demo</a></h1>
     <div id="terminal">
-      <p id="intro">Type 'help' to get started.</p>
+      <p id="boot">Type 'help' to get started.</p>
       <p class="hidden">
         <span class="prompt"></span>
         <span contenteditable="true" class="input"> </span>
       </p>
     </div>
     <script src="js/terminal.js"></script>
+    <script src="js/boot.js"></script>
     <script src="js/system.js"></script>
     <script src="commands.js"></script>
     <script>
         // Extend the built-in system commands with the custom commands from commands.js.
         var commands = extendObject(builtInCommands, customCommands);
-
 
         // Set the command prompt style:
         var customPrompt = function () { return "<span style='color:#00ffff;'>guest@TerminalFaker $</span> ";};

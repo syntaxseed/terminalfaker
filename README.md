@@ -30,7 +30,7 @@ Here's a minimal example with one command:
   <div id="terminal">
     <p id="intro">Type a command to get started.</p>
     <p class="hidden">
-      <p id="intro">Type 'help' to get started.</p>
+      <p id="boot">Type 'help' to get started.</p>
       <span class="prompt"></span>
       <span contenteditable="true" class="input"> </span>
     </p>
@@ -111,9 +111,23 @@ Note that the ``args`` array's first element is the name of the command itself.
 
 That's it! Now the commands defined in commands.js will extend (and overwrite if re-defined) the built-in commands. We have a terminal that can greet the user :)
 
-## Advance Example
+## Custom boot message
 
-To see a full example including loading in system commands and nicer intro text, see the source of index.html.
+A boot up message can be simulated including delayed line-by line display of the boot text. This message is found in js/boot.js and is used by including the file *after* terminal.js is included. Your terminal div must contain an element with id of "boot".
+
+```html
+...
+<script src="js/terminal.js"></script>
+<script src="js/boot.js"></script>
+
+Note that this will over-write any text already in the element with id "boot".
+...
+```
+## Advanced Example
+
+![Logo](media/screenshot1.png)
+
+To see a full example including loading in system commands and the nicer boot message text, see the source of index.html.
 
 ## ToDo
 

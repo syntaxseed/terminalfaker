@@ -80,6 +80,21 @@ var Terminal = (function() {
 
     // Terminal functions
 
+    self.bootTerminalMessage = function(terminal, bootElement, introLines, num) {
+        if(num == 0){
+            terminal.querySelector(".hidden").style.display = 'none'; // Hide the prompt.
+            bootElement.innerHTML = "";
+        }
+        bootElement.innerHTML += introLines[num];
+        if( num+1 in introLines){
+            setTimeout(function() {
+                self.bootTerminalMessage(terminal, bootElement, introLines, num+1);
+            },500);
+        }else{
+            terminal.querySelector(".hidden").style.display = ''; // Show the prompt.
+        }
+    };
+
     self.init = function(elem, commands, customPrompt) {
         self.commands = commands;
 
