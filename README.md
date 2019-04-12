@@ -81,11 +81,11 @@ $ hello Alice
 Hi there, Alice
 ```
 
-In commands.js this is done by creating a ``customCommands`` object and adding a "hello" object to it with an "about" property and a "exe" property.
+In commands.js this is done by creating a "customCommands" object and adding a "hello" object to it with an "about" property and a "exe" property.
 
-''customCommands.hello.about'' will contain a string of the help info to display if the user types ``help hello``.
+"customCommands.hello.about" will contain a string of the help info to display if the user types ``help hello``.
 
-''customCommands.hello.exe'' will contain the closure to execute when the command is run. It can receive an "args" parameter which is an array of the command line arguments.
+"customCommands.hello.exe" will contain the closure to execute when the command is run. It can receive an "args" parameter which is an array of the command line arguments.
 
 In this case, hello will take one parameter, which will be the array of arguments (separated by spaces) entered to call the command and returns HTML to be displayed in the terminal.
 
