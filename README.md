@@ -24,11 +24,11 @@ It's really easy:
 2. You create an object with methods that will be your commands (see below for the details of how this works).
 3. Call terminal.init and pass the container element, your commands object, and a callback which creates the custom prompt. - **Ready to roll!**
 
-Here's a minimal example:
+Here's a minimal example with one command:
 
 ```html
   <div id="terminal">
-    <p>Type 'help' to get started.</p>
+    <p id="intro">Type a command to get started.</p>
     <p class="hidden">
       <p id="intro">Type 'help' to get started.</p>
       <span class="prompt"></span>
@@ -37,7 +37,6 @@ Here's a minimal example:
   </div>
   <script src="js/terminal.js"></script>
   <script>
-    var version = '1.0.0'; // Used in various commands.
     var commands = {};
     commands.cow = {
           about:  "What does the cow say?",
@@ -47,7 +46,7 @@ Here's a minimal example:
     };
 
     // Set the command prompt style:
-    var customPrompt = function () { return "<span style='color:#00ffff;'>user@terminal.js $</span> ";};
+    var customPrompt = function () { return "guest@TerminalFaker $ ";};
 
     // Initialize the terminal:
     var term = Terminal.init(document.getElementById("terminal"), commands, customPrompt);
@@ -111,6 +110,16 @@ customCommands.hello = {
 Note that the ``args`` array's first element is the name of the command itself.
 
 That's it! Now the commands defined in commands.js will extend (and overwrite if re-defined) the built-in commands. We have a terminal that can greet the user :)
+
+## Advance Example
+
+To see a full example including loading in system commands and nicer intro text, see the source of index.html.
+
+## ToDo
+
+* Slowly load in a better intro line by line.
+* Basic filesystem.
+* ls, cd, cat, touch, editing of files, mkdir, rmdir.
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.

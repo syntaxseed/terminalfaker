@@ -4,17 +4,7 @@
     <title>Terminal Faker Demo</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
     <link rel="icon" type="image/png" href="favicon.png" />
-    <link rel="stylesheet" href="terminal.css">
-    <script>
-        /* ************* TODO ***************
-           - Slowly load in a better intro line by line.
-           - Basic file browsing.
-           - Save the 'built in' commands elsewhere.
-        ********************/
-
-        var version = '1.1.1';  // Used in various commands.
-
-    </script>
+    <link rel="stylesheet" href="terminal.css" />
     <style>
       /* Over-write some styles or define on-page styles. */
       body {
@@ -60,7 +50,7 @@
 
 
         // Set the command prompt style:
-        var customPrompt = function () { return "<span style='color:#00ffff;'>user@terminal.js $</span> ";};
+        var customPrompt = function () { return "<span style='color:#00ffff;'>guest@TerminalFaker $</span> ";};
 
         // Initialize the terminal:
         var term = Terminal.init(document.getElementById("terminal"), commands, customPrompt);
