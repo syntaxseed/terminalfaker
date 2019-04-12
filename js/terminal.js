@@ -92,6 +92,7 @@ var Terminal = (function() {
             },500);
         }else{
             terminal.querySelector(".hidden").style.display = ''; // Show the prompt.
+            terminal.querySelector(".input").focus();
         }
     };
 
