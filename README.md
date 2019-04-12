@@ -1,13 +1,13 @@
-terminal.js
+Terminal Faker
 ===========
 
-An extensible pseudo-terminal for your website (or whatever you do in the browser)
+An extensible pseudo-terminal in Javascript.
 
 ## What's this?
-Terminal.js is a Javascript terminal emulation for use in the browser.
-And it's available as a web component, too.
+Terminal Faker is a Javascript terminal emulation for use in the browser. Originally forked from AVGP/Terminal.js.
 
-I have a [live demo here](http://avgp.github.io/terminal.js) and the component version of the demo can be found [here](http://avgp.github.io/component/index.html)
+
+There is a [live demo here](https://syntaxseed.github.io/terminalfaker/).
 
 You can do a bunch of things with it:
 
