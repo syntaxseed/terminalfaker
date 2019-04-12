@@ -16,6 +16,7 @@
 
     </script>
     <style>
+      /* Over-write some styles or define on-page styles. */
       body {
         background: black;
         color:      white;
@@ -23,18 +24,26 @@
         width:  100%;
         height: 100%;
 
-        padding: 0;
+        padding: 4px;
         margin:  0;
 
         font-size:1.3em;
 
         box-sizing: border-box;
       }
+      h1 {
+          font-size: 1.2em;
+      }
+      h1 a{
+        color: #999;
+        font-size:0.8em;
+        text-decoration: none;
+      }
     </style>
 
   </head>
   <body>
-    <h1>Terminal Faker Demo</h1>
+    <h1><a href="https://github.com/syntaxseed/terminalfaker">Terminal Faker Demo</a></h1>
     <div id="terminal">
       <p id="intro">Type 'help' to get started.</p>
       <p class="hidden">

@@ -10,22 +10,6 @@ builtInCommands.clear = {
     }
 };
 
-/**
- * Prints a greeting to the user or to the given name.
- **/
-builtInCommands.hello = {
-    about: "hello [arg ...]<br>&nbsp;&nbsp;Greet the user with a message.",
-    exe: function (args) {
-        if (args.length < 2) {
-            return "Hello. Why don't you tell me your name?";
-        }
-        var name = "";
-        for (var i = 1; i < args.length; i++) {
-            name += args[i] + " ";
-        }
-        return "Hello " + name.trim();
-    }
-};
 
 /**
  * Lists all available commands or the help for a given command.

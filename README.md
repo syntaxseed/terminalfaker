@@ -5,7 +5,7 @@ Terminal Faker
 
 An extensible pseudo-terminal in Javascript.
 
-## What's this?
+# What's this?
 Terminal Faker is a Javascript, Linux-like terminal simulation for use in the browser. Originally forked from AVGP/Terminal.js.
 
 There is a [live demo here](https://syntaxseed.github.io/terminalfaker/).
@@ -35,7 +35,7 @@ Here's a minimal example:
       <span contenteditable="true" class="input"> </span>
     </p>
   </div>
-  <script src="terminal.js"></script>
+  <script src="js/terminal.js"></script>
   <script>
     var version = '1.0.0'; // Used in various commands.
     var commands = {};
@@ -47,10 +47,10 @@ Here's a minimal example:
     };
 
     // Set the command prompt style:
-      var customPrompt = function () { return "<span style='color:#00ffff;'>user@terminal.js $</span> ";};
+    var customPrompt = function () { return "<span style='color:#00ffff;'>user@terminal.js $</span> ";};
 
-      // Initialize the terminal:
-      var term = Terminal.init(document.getElementById("terminal"), commands, customPrompt);
+    // Initialize the terminal:
+    var term = Terminal.init(document.getElementById("terminal"), commands, customPrompt);
   </script>
 ```
 
@@ -58,6 +58,21 @@ Here's a minimal example:
 
 The terminal is only a way to interact with "commands" and "commands" are a bundles of functionality.
 So to use the terminal, you'll need to create a bunch of functions that actually do something - and that's not hard.
+
+First we modify our minimal example to load in the built-in commands and then extend them with custom commands defined in commands.js:
+
+```html
+  ...
+  <script src="js/terminal.js"></script>
+  <script src="js/system.js"></script>
+  <script src="commands.js"></script>
+  <script>
+      // Extend the built-in system commands with the custom commands from commands.js.
+      var commands = extendObject(builtInCommands, customCommands);
+  ...
+```
+
+Then, in commands.js we will define custom commands (there are a couple examples in there already for you).
 
 ### A greeting command
 So let's build a command that greets the user with the name she enters, like this:
@@ -67,42 +82,43 @@ $ hello Alice
 Hi there, Alice
 ```
 
-in Terminal.js this is done by creating a ``commands`` object and add a "hello" method to it.
-That method will take one parameter, which will be the array of arguments (separated by spaces) entered to call the command and returns HTML to be displayed in the terminal.
+In commands.js this is done by creating a ``customCommands`` object and adding a "hello" object to it with an "about" property and a "exe" property.
+
+''customCommands.hello.about'' will contain a string of the help info to display if the user types ``help hello``.
+
+''customCommands.hello.exe'' will contain the closure to execute when the command is run. It can receive an "args" parameter which is an array of the command line arguments.
+
+In this case, hello will take one parameter, which will be the array of arguments (separated by spaces) entered to call the command and returns HTML to be displayed in the terminal.
 
 ```javascript
-var commands = {
-  hello: function(args) {
-    if(args.length < 2) return "<div>Please tell me your name like this: <pre>hello Alice</pre></div>";
-    return "<div>Hi there, " + args[1] + "</div>";
-  }
+var customCommands = {};
+customCommands.hello = {
+    about: "hello [arg ...]<br>&nbsp;&nbsp;Greet the user with a message.",
+    exe: function (args) {                          // Executed for this command. args[0] contains the command name.
+        if (args.length < 2) {
+            return "Hello. Why don't you tell me your name?";
+        }
+        var name = "";
+        // Concatenate all remaining arguments as the 'name'.
+        for (var i = 1; i < args.length; i++) {
+            name += args[i] + " ";
+        }
+        return "Hello " + name.trim();
+    }
 };
 ```
 
 Note that the ``args`` array's first element is the name of the command itself.
 
-Now we can make our terminal (I left parts of the HTML out, see ``index.html`` for a full example):
+That's it! Now the commands defined in commands.js will extend (and overwrite if re-defined) the built-in commands. We have a terminal that can greet the user :)
 
-```html
-<div id="terminal">
-  <p>
-    <span>$ </span>
-    <span contenteditable="true" class="input"></span>
-  </p>
-</div>
-<script>
-var commands = {
-  hello: function(args) {
-    if(args.length < 2) return "<div>Please tell me your name like this: <pre>hello Alice</pre></div>";
-    return "<div>Hi there, " + args[1] + "</div>";
-  }
-};
+## Contributing
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
-terminal.init(document.getElementById("terminal"), commands);
-</script>
-```
-and we're done. We have a terminal that can greet the user :)
+## Authors
 
+* **Sherri Wheeler** - *Author & Maintainer* - [SyntaxSeed/](https://github.com/SyntaxSeed)
+* **Martin Splitt** - *Based on his original Terminal.js* - [AVGP/terminal.js](https://github.com/AVGP/terminal.js)
 
-# License
+## License
 MIT License - basically: Do whatever you feel like, but don't sue me when it blows up.
