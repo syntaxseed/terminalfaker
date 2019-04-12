@@ -87,7 +87,7 @@ In commands.js this is done by creating a "customCommands" object and adding a "
 
 "customCommands.hello.exe" will contain the closure to execute when the command is run. It can receive an "args" parameter which is an array of the command line arguments.
 
-In this case, hello will take one parameter, which will be the array of arguments (separated by spaces) entered to call the command and returns HTML to be displayed in the terminal.
+In this case, hello will take multiple arguments (separated by spaces), which will be passed into the command as the "args" array and returns HTML to be displayed in the terminal.
 
 ```javascript
 var customCommands = {};
