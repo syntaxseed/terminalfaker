@@ -6,24 +6,23 @@ Terminal Faker
 An extensible pseudo-terminal in Javascript.
 
 ## What's this?
-Terminal Faker is a Javascript terminal emulation for use in the browser. Originally forked from AVGP/Terminal.js.
-
+Terminal Faker is a Javascript, Linux-like terminal simulation for use in the browser. Originally forked from AVGP/Terminal.js.
 
 There is a [live demo here](https://syntaxseed.github.io/terminalfaker/).
 
 You can do a bunch of things with it:
 
-- Create a CLI-style API interface that runs in the browser
-- Create a remote terminal emulator for something that exposes an interface in a browser-consumable way (CORS, Websocket, WebRTC, ...)
-- Create a text-based adventure game in the browser
-- whatever you can come up with, where a command line interface is useful.
+- Create a CLI-style API interface that runs in the browser.
+- Create a remote terminal emulator for something that exposes an interface in a browser-consumable way (CORS, Websocket, WebRTC, ...).
+- Create a text-based adventure game in the browser.
+- Whatever you can come up with, where a command line interface is useful.
 
 ## How do I use it?
 It's really easy:
 
-1. You include the ``terminal.css`` and ``terminal.js`` files and have a container element (e.g. a div) with a child element holding a contenteditable element of class ``input`` and another span with the actual prompt line you wanna display.
-2. You create an object with methods that will be your commands (see below for the details of how this works)
-3. Call terminal.init and pass the container element and your commands object - **Ready to roll!**
+1. You include the ``terminal.css`` and ``terminal.js`` files and have a container element (e.g. a div) with a child element holding a contenteditable element of class ``input`` and another span of class ``prompt`` with the actual prompt line you want to display.
+2. You create an object with methods that will be your commands (see below for the details of how this works).
+3. Call terminal.init and pass the container element, your commands object, and a callback which creates the custom prompt. - **Ready to roll!**
 
 Here's a minimal example:
 
@@ -31,26 +30,27 @@ Here's a minimal example:
   <div id="terminal">
     <p>Type 'help' to get started.</p>
     <p class="hidden">
+      <p id="intro">Type 'help' to get started.</p>
       <span class="prompt"></span>
       <span contenteditable="true" class="input"> </span>
     </p>
   </div>
   <script src="terminal.js"></script>
   <script>
+    var version = '1.0.0'; // Used in various commands.
     var commands = {};
-    commands.hello = {
-          about:  "Greet the user with a message.",
-          exe:  function(args) {
-            if(args.length < 2) return "<p>Hello. Why don't you tell me your name?</p>";
-            return "Hello " + args[1];
+    commands.cow = {
+          about:  "What does the cow say?",
+          exe:  function() {
+            return "Moooooo!";
           }
     };
 
     // Set the command prompt style:
-    var customPrompt = function () { return "user@terminal.js &sim;&gt; ";};
+      var customPrompt = function () { return "<span style='color:#00ffff;'>user@terminal.js $</span> ";};
 
-    // Initialize the terminal:
-    Terminal.init(document.getElementById("terminal"), commands, customPrompt);
+      // Initialize the terminal:
+      var term = Terminal.init(document.getElementById("terminal"), commands, customPrompt);
   </script>
 ```
 

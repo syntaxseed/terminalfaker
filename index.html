@@ -8,12 +8,11 @@
     <script>
         /* ************* TODO ***************
            - Slowly load in a better intro line by line.
-           - Push to github.
-           - New fork name.
            - Basic file browsing.
+           - Save the 'built in' commands elsewhere.
         ********************/
 
-        var version = '1.0.0';
+        var version = '1.1.1';  // Used in various commands.
 
     </script>
     <style>
@@ -43,87 +42,19 @@
         <span contenteditable="true" class="input"> </span>
       </p>
     </div>
-    <script src="terminal.js"></script>
+    <script src="js/terminal.js"></script>
+    <script src="js/system.js"></script>
+    <script src="commands.js"></script>
     <script>
-
-      var commands = {};
-
-      /**
-       * Clears the terminal using a special flag on the resetPrompt function.
-       **/
-      commands.clear = {
-          about:  "Clear the terminal window.",
-          exe:  function() {
-              return "";
-          }
-      };
-
-      /**
-       * Prints a greeting to the user or to the given name.
-       **/
-      commands.hello = {
-          about:  "Greet the user with a message.",
-          exe:  function(args) {
-            if(args.length < 2){
-                return "Hello. Why don't you tell me your name?";
-            }
-            var name = "";
-            for(var i = 1; i< args.length; i++){
-                name += args[i] + " ";
-            }
-            return "Hello " + name.trim();
-          }
-      };
-
-      /**
-       * Lists all available commands or the help for a given command.
-       **/
-      commands.help = {
-          about: "Show a list of available commands.",
-          exe: function(args) {
-            var output = "";
-            if(args.length == 2 && args[1] && args[1].toLowerCase() in commands) {
-                output +=  "<strong>"+args[1].toLowerCase()+"</strong>: "+ commands[args[1].toLowerCase()].about +"";
-            }else{
-                output += "TERM bash, version "+version+"-release (x86_64-pc-linux-gnu)<br>These shell commands are defined internally.  Type 'help' to see this list.<br>Type `help name' to find out more about the function 'name'.<br><br>";
-                output += "";
-
-                Object.keys(commands).forEach( function(cName) {
-                    output += "<strong>"+cName+"</strong>&nbsp;&nbsp;&nbsp;";
-                });
-            }
-            output += "<br><br>";
-            return output;
-          }
-      };
-
-      /**
-       * Lists the recent commands.
-       **/
-      commands.history = {
-          about:  "Display the list of recent commands.<br>&nbsp;&nbsp;-c  clear the history list.",
-          exe:  function(args) {
-            if( args.length == 2 && args[1] == "-c"){
-                localStorage.setItem("history", []);
-                term.history = [];
-
-            }
-            var history = term.history;
-            var output = "";
-
-            history.forEach(function(element, index){
-                output += index + "&nbsp;&nbsp;"+element+"<br>";
-            });
-            return output;
-          }
-      };
+        // Extend the built-in system commands with the custom commands from commands.js.
+        var commands = extendObject(builtInCommands, customCommands);
 
 
-      // Set the command prompt style:
-      var customPrompt = function () { return "<span style='color:#00ffff;'>user@terminal.js $</span> ";};
+        // Set the command prompt style:
+        var customPrompt = function () { return "<span style='color:#00ffff;'>user@terminal.js $</span> ";};
 
-      // Initialize the terminal:
-      var term = Terminal.init(document.getElementById("terminal"), commands, customPrompt);
+        // Initialize the terminal:
+        var term = Terminal.init(document.getElementById("terminal"), commands, customPrompt);
 
     </script>
   </body>
