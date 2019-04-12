@@ -37,7 +37,7 @@ builtInCommands.help = {
  * Lists the recent builtInCommands.
  **/
 builtInCommands.history = {
-    about: "history [-c]<br>&nbsp;&nbsp;Display the list of recent commands.<br>&nbsp;&nbsp;-c  clear the history list.",
+    about: "history [-c]<br>&nbsp;&nbsp;Display the list of recent commands.<br>&nbsp;&nbsp;-c clear the history list.",
     exe: function (args) {
         if (args.length == 2 && args[1] == "-c") {
             localStorage.setItem("history", []);
@@ -58,12 +58,17 @@ builtInCommands.history = {
  * Lists the files and directories in the current path.
  **/
 builtInCommands.ls = {
-    about: "ls<br>&nbsp;&nbsp;List directory contents.",
-    exe: function () {
+    about: "ls [-l]<br>&nbsp;&nbsp;List directory contents.<br>&nbsp;&nbsp;-l list contents vertically.",
+    exe: function (args) {
         var listing = "";
         var children = Array.prototype.slice.call(term.filesystemPointer.querySelector('c').children);
         children.forEach(function(element, index){
-            listing += "<span class='filesystem-"+element.nodeName+"'>"+element.getAttribute('name')+"</span><br>";
+            listing += "<span class='filesystem-"+element.nodeName+"'>"+element.getAttribute('name')+"</span>";
+            if( args[1] && args[1] == "-l"){
+                listing += "<br>";
+            }else{
+                listing += "&nbsp;&nbsp;";
+            }
         });
 
         return listing;
