@@ -6,7 +6,7 @@ Terminal Faker
 An extensible pseudo-terminal in Javascript.
 
 # What's this?
-Terminal Faker is a Javascript, Linux-like terminal simulation for use in the browser. Originally forked from AVGP/Terminal.js.
+Terminal Faker is a Javascript, Linux-like terminal simulation for use in the browser. Originally forked from [AVGP/terminal.js](https://github.com/AVGP/terminal.js).
 
 There is a [live demo here](https://syntaxseed.github.io/terminalfaker/).
 
