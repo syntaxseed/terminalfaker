@@ -22,7 +22,19 @@
     display:        inline-block;
 }
 
+#terminal .prompt{
+    color:#00ff99;
+}
+
 #terminal p {
     margin:     0;
     padding:    0;
+}
+
+#terminal .filesystem-d {
+    font-weight:bold;
+    color: #6666ff;
+}
+#terminal .filsystem-f {
+
 }

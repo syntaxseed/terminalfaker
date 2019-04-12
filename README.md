@@ -63,6 +63,7 @@ First we modify our minimal example to load in the built-in commands and then ex
 ```html
   ...
   <script src="js/terminal.js"></script>
+  <script src="js/filesystem.js"></script>
   <script src="js/system.js"></script>
   <script src="commands.js"></script>
   <script>
@@ -113,16 +114,22 @@ That's it! Now the commands defined in commands.js will extend (and overwrite if
 
 ## Custom boot message
 
-A boot up message can be simulated including delayed line-by line display of the boot text. This message is found in js/boot.js and is used by including the file *after* terminal.js is included. Your terminal div must contain an element with id of "boot".
+A boot up message can be simulated including delayed line-by line display of the boot text. This message is found in js/boot.js and is used by including the file *after* terminal.js is included. Your terminal div must contain an element with id of "boot". If you don't want this, just remove the filesystem.js file include.
 
 ```html
 ...
 <script src="js/terminal.js"></script>
+<script src="js/filesystem.js"></script>
 <script src="js/boot.js"></script>
-
-Note that this will over-write any text already in the element with id "boot".
 ...
 ```
+
+Note that this will over-write any text already in the element with id "boot".
+
+## A Mock Filesystem
+
+A simulated filesystem is initialized from the default content found in js/filesystem.js. Basic navigation around the filesystem is available. You can edit this file to customize the contents.
+
 ## Advanced Example
 
 ![Logo](media/screenshot1.png)
@@ -131,8 +138,8 @@ To see a full example including loading in system commands and the nicer boot me
 
 ## ToDo
 
-* Basic filesystem.
-* ls, cd, cat, touch, editing of files, mkdir, rmdir.
+* Basic filesystem (in progress).
+* cat, touch, editing of files, mkdir, rmdir ,rm.
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.

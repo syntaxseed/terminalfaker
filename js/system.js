@@ -54,6 +54,40 @@ builtInCommands.history = {
     }
 };
 
+/**
+ * Lists the files and directories in the current path.
+ **/
+builtInCommands.ls = {
+    about: "ls<br>&nbsp;&nbsp;List directory contents.",
+    exe: function () {
+        var listing = "";
+        var children = Array.prototype.slice.call(term.filesystemPointer.querySelector('c').children);
+        children.forEach(function(element, index){
+            listing += "<span class='filesystem-"+element.nodeName+"'>"+element.getAttribute('name')+"</span><br>";
+        });
+
+        return listing;
+    }
+}
+
+/**
+ * Change into a directory.
+ **/
+builtInCommands.cd = {
+    about: "cd [arg]<br>&nbsp;&nbsp;Change directory to the specified path.",
+    exe: function (args) {
+        if(args.length != 2){
+            return "";
+        }
+        var path = args[1];
+        var result = term.changeDirectory(path);
+        if(!result){
+            return "No such directory.";
+        }
+        return "";
+    }
+}
+
 builtInCommands.version = {
     about: "version<br>&nbsp;&nbsp;Display the version and attribution of this terminal application.",
     exe: function () {
