@@ -1,6 +1,8 @@
 Terminal Faker
 ===========
 
+![Logo](favicon.png)
+
 An extensible pseudo-terminal in Javascript.
 
 ## What's this?
