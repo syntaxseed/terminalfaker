@@ -1,0 +1,28 @@
+@import url('https://fonts.googleapis.com/css?family=VT323');
+
+/**
+* Terminal container.
+* Important note: The "VT323" font face comes from Google web fonts.
+*/
+#terminal {
+    font-family: 'VT323', monospace;
+    width:       100%;
+    height:      100%;
+}
+
+/**
+* The input span where the input happens.
+* Also applied to the previous inputs made in the current session.
+*/
+#terminal .input {
+    height:         1em;
+    min-width:      3em;
+    outline-color:  transparent;
+    border:         none;
+    display:        inline-block;
+}
+
+#terminal p {
+    margin:     0;
+    padding:    0;
+}
