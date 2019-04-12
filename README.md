@@ -131,7 +131,6 @@ To see a full example including loading in system commands and the nicer boot me
 
 ## ToDo
 
-* Slowly load in a better intro line by line.
 * Basic filesystem.
 * ls, cd, cat, touch, editing of files, mkdir, rmdir.
 
