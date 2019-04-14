@@ -1,4 +1,4 @@
-var version = '1.3.2';  // Used in various commands.
+var version = '1.3.3';  // Used in various commands.
 
 var Terminal = (function() {
     var history = (localStorage.getItem("history") ? localStorage.getItem("history").split(",") : []),
@@ -87,6 +87,7 @@ var Terminal = (function() {
 
     var parseDirPathToSelector = function(path) {
         if(path == "/" || path == "~") return "d[path='/'][name='/']";
+        path = path.replace(/\/+$/, ""); // Remove trailing slash.
         var name = path.split('\\').pop().split('/').pop();
         var dirs = path.substring(0, path.lastIndexOf("/")+1);
         return "d[path='"+dirs+name+"/'][name='"+name+"']";
@@ -117,6 +118,32 @@ var Terminal = (function() {
         }
     };
 
+    self.catFile = function(path){
+        // First, is the path present in the current location (add given path to the current path)?
+        var foundNode = null;
+        var selector = '';
+        if(path.substr(0, 1) != '/'){
+            // Search in and below current directory (add given path to the current path):
+            var selector = parseFilePathToSelector(self.path+path);
+            console.log(selector);
+            var foundNode = self.filesystemPointer.querySelector(selector);
+        }
+        if (typeof foundNode === 'undefined' || foundNode == null || foundNode.nodeName != 'f'){
+            // Not found in current directory, search globally:
+            selector = parseFilePathToSelector(path);
+            console.log(selector);
+            var foundNode = self.filesystem.querySelector(selector);
+            if (typeof foundNode === 'undefined' || foundNode == null || foundNode.nodeName != 'f'){
+                return false;
+            }
+        }
+
+        console.log(foundNode);
+        // We found a node! Output the file contents.
+        return foundNode.querySelector('contents').innerHTML;
+
+    }
+
     self.changeDirectory = function(path){
         if( path == ".."){
             // Go up one level as long as we aren't already at the filesystem root.
@@ -134,9 +161,13 @@ var Terminal = (function() {
             return true;
         }
 
-        // First, is the path present in the current location (add given path to current path)?
-        var selector = parseDirPathToSelector(self.path+path);
-        var foundNode = self.filesystemPointer.querySelector(selector);
+        var foundNode = null;
+        var selector = '';
+        if(path.substr(0, 1) != '/'){
+            // Search in and below current directory (add given path to the current path):
+            var selector = parseDirPathToSelector(self.path+path);
+            var foundNode = self.filesystemPointer.querySelector(selector);
+        }
         if (typeof foundNode === 'undefined' || foundNode == null || foundNode.nodeName != 'd'){
             // Not found in current directory, search globally:
             selector = parseDirPathToSelector(path);

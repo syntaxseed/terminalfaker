@@ -1,5 +1,39 @@
 var builtInCommands = {};
 
+
+
+builtInCommands.cat = {
+    about: "cat [arg]<br>&nbsp;&nbsp;Display the contents of the specified file.",
+    exe: function (args) {
+        if(args.length != 2){
+            return "No such file.";
+        }
+        var result = term.catFile(args[1]);
+        if(result === false){
+            return "No such file, or argument is a directory.";
+        }
+        return result;
+    }
+}
+
+/**
+ * Change into a directory.
+ **/
+builtInCommands.cd = {
+    about: "cd [arg]<br>&nbsp;&nbsp;Change directory to the specified path.",
+    exe: function (args) {
+        if(args.length != 2){
+            return "";
+        }
+        var result = term.changeDirectory(args[1]);
+        if(!result){
+            return "No such directory.";
+        }
+        return "";
+    }
+}
+
+
 /**
  * Clears the terminal using a special flag on the resetPrompt function.
  **/
@@ -76,23 +110,8 @@ builtInCommands.ls = {
 }
 
 /**
- * Change into a directory.
- **/
-builtInCommands.cd = {
-    about: "cd [arg]<br>&nbsp;&nbsp;Change directory to the specified path.",
-    exe: function (args) {
-        if(args.length != 2){
-            return "";
-        }
-        var path = args[1];
-        var result = term.changeDirectory(path);
-        if(!result){
-            return "No such directory.";
-        }
-        return "";
-    }
-}
-
+ * Get the version, author and repo information for Terminal Faker.
+ */
 builtInCommands.version = {
     about: "version<br>&nbsp;&nbsp;Display the version and attribution of this terminal application.",
     exe: function () {
