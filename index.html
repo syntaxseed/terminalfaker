@@ -38,14 +38,15 @@
       <p id="boot">Type 'help' to get started.</p>
       <p class="hidden">
         <span class="prompt"></span>
-        <span contenteditable="true" class="input"> </span>
+        <span contenteditable="true" autocaptialize="none" class="input"> </span>
       </p>
     </div>
     <script src="js/terminal.js"></script>
     <script src="js/filesystem.js"></script>
     <script src="js/boot.js"></script>
     <script src="js/system.js"></script>
-    <script src="commands.js"></script>
+    <script src="js/commands.js"></script>
+
     <script>
         // Extend the built-in system commands with the custom commands from commands.js.
         var commands = extendObject(builtInCommands, customCommands);

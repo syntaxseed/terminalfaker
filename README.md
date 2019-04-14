@@ -6,43 +6,48 @@ Terminal Faker
 An extensible pseudo-terminal in Javascript.
 
 # What's this?
-Terminal Faker is a Javascript, mobile-friendly, Linux-like terminal simulation for use in the browser. Originally forked from [AVGP/terminal.js](https://github.com/AVGP/terminal.js).
+Terminal Faker is a Javascript, mobile-friendly, Linux-like terminal simulation for use in the browser.
 
 There is a [live demo here](https://syntaxseed.github.io/terminalfaker/).
+
+ Originally forked from [AVGP/terminal.js](https://github.com/AVGP/terminal.js).
 
 You can do a bunch of things with it:
 
 - Create a CLI-style API interface that runs in the browser.
-- Create a remote terminal emulator for something that exposes an interface in a browser-consumable way (CORS, Websocket, WebRTC, ...).
+- Create a terminal emulator for something that exposes an interface in a browser-consumable way (CORS, Websocket, WebRTC, ...).
 - Create a text-based adventure game in the browser.
-- Whatever you can come up with, where a command line interface is useful.
+- Create an educational tool for learning command line applications.
+- Etc.
 
 ## How do I use it?
-It's really easy:
 
-1. You include the ``terminal.css`` and ``terminal.js`` files and have a container element (e.g. a div) with a child element holding a contenteditable element of class ``input`` and another span of class ``prompt`` with the actual prompt line you want to display.
-2. You create an object with methods that will be your commands (see below for the details of how this works).
+The easiest way to get started is to use the included "index.html" file and modify it for your needs. The basic usage is:
+
+1. Include the "terminal.css" and the "terminal.js", "filesystem.js" files and have a container element (e.g. a div) with a child element holding a contenteditable element of class "input" and another span of class "prompt" with the actual prompt line you want to display.
+2. Create an object with methods that will be your commands (see below for the details of how this works).
 3. Call terminal.init and pass the container element, your commands object, and a callback which creates the custom prompt. - **Ready to roll!**
 
-Here's a minimal example with one command:
+Here's a **minimal** example with one command:
 
 ```html
-  <div id="terminal">
-    <p id="intro">Type a command to get started.</p>
-    <p class="hidden">
-      <p id="boot">Type 'help' to get started.</p>
-      <span class="prompt"></span>
-      <span contenteditable="true" class="input"> </span>
-    </p>
-  </div>
-  <script src="js/terminal.js"></script>
-  <script>
+    <div id="terminal">
+            <p id="boot">Type 'help' to get started.</p>
+            <p class="hidden">
+                <span class="prompt"></span>
+                <span contenteditable="true" autocaptialize="none" class="input"> </span>
+            </p>
+            </div>
+    <script src="js/terminal.js"></script>
+    <script src="js/filesystem.js"></script>
+    <script>
+
     var commands = {};
     commands.cow = {
-          about:  "What does the cow say?",
-          exe:  function() {
+            about:  "What does the cow say?",
+            exe:  function() {
             return "Moooooo!";
-          }
+            }
     };
 
     // Set the command prompt style:
@@ -50,7 +55,7 @@ Here's a minimal example with one command:
 
     // Initialize the terminal:
     var term = Terminal.init(document.getElementById("terminal"), commands, customPrompt);
-  </script>
+    </script>
 ```
 
 ## Extensible command interface
@@ -58,14 +63,14 @@ Here's a minimal example with one command:
 The terminal is only a way to interact with "commands" and "commands" are a bundles of functionality.
 So to use the terminal, you'll need to create a bunch of functions that actually do something - and that's not hard.
 
-First we modify our minimal example to load in the built-in commands and then extend them with custom commands defined in commands.js:
+First we modify our minimal example to load in the built-in commands found in "js/system.js" and then extend them with custom commands defined in "js/commands.js":
 
 ```html
   ...
   <script src="js/terminal.js"></script>
   <script src="js/filesystem.js"></script>
   <script src="js/system.js"></script>
-  <script src="commands.js"></script>
+  <script src="js/commands.js"></script>
   <script>
       // Extend the built-in system commands with the custom commands from commands.js.
       var commands = extendObject(builtInCommands, customCommands);
@@ -108,13 +113,13 @@ customCommands.hello = {
 };
 ```
 
-Note that the ``args`` array's first element is the name of the command itself.
+Note that the "args" array's first element is the name of the command itself.
 
-That's it! Now the commands defined in commands.js will extend (and overwrite if re-defined) the built-in commands. We have a terminal that can greet the user :)
+That's it! Now the commands defined in "commands.js" will extend (and overwrite if re-defined) the built-in commands. We have a terminal that can greet the user. :)
 
 ## Custom boot message
 
-A boot up message can be simulated including delayed line-by line display of the boot text. This message is found in js/boot.js and is used by including the file *after* terminal.js is included. Your terminal div must contain an element with id of "boot". If you don't want this, just remove the filesystem.js file include.
+A boot up message can be simulated including delayed line-by line display of the boot text. This message is found in "js/boot.js" and is used by including the file *after* "terminal.js" is included. Your terminal div must contain an element with id of "boot". If you don't want this, just remove the "boot.js" file include.
 
 ```html
 ...

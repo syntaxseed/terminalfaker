@@ -10,8 +10,8 @@ var customCommands = {};
  * Print a simple message.
  **/
 customCommands.cow = {
-    about:  "cow<br>&nbsp;&nbsp;What does the cow say?",     // Help text for this command.
-    exe:  function() {                                       // Executed for this command.
+    about:  "cow<br>&nbsp;&nbsp;What does a cow say?",     // Help text for this command.
+    exe:  function() {                                     // Executed for this command.
             return "Moooooo!";
     }
 };

@@ -6,7 +6,7 @@ var builtInCommands = {};
 builtInCommands.clear = {
     about: "clear<br>&nbsp;&nbsp;Clear the terminal window.",
     exe: function () {
-        return "";
+        return "";    // Functionality is handled internally by watching for this specific command name when resetting the prompt.
     }
 };
 
