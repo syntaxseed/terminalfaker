@@ -6,11 +6,9 @@ Terminal Faker
 An extensible pseudo-terminal in Javascript.
 
 # What's this?
-Terminal Faker is a Javascript, mobile-friendly, Linux-like terminal simulation for use in the browser.
+A pure native Javascript, mobile-friendly, Linux-like terminal simulation for use in a browser. There is a [live lemo here](https://syntaxseed.github.io/terminalfaker/).
 
-There is a [live demo here](https://syntaxseed.github.io/terminalfaker/).
-
- Originally forked from [AVGP/terminal.js](https://github.com/AVGP/terminal.js).
+Originally forked from [AVGP/terminal.js](https://github.com/AVGP/terminal.js).
 
 You can do a bunch of things with it:
 
@@ -35,7 +33,7 @@ Here's a **minimal** example with one command:
             <p id="boot">Type 'help' to get started.</p>
             <p class="hidden">
                 <span class="prompt"></span>
-                <span contenteditable="true" autocaptialize="none" class="input"> </span>
+                <span contenteditable="true" class="input" autocorrect="off" autocapitalize="none" autocomplete="off"> </span>
             </p>
             </div>
     <script src="js/terminal.js"></script>
