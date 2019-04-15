@@ -1,4 +1,4 @@
-var version = '1.3.3';  // Used in various commands.
+var version = '1.3.4';  // Used in various commands.
 
 var Terminal = (function() {
     var history = (localStorage.getItem("history") ? localStorage.getItem("history").split(",") : []),
