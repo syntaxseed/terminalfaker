@@ -55,7 +55,7 @@ builtInCommands.help = {
         if (args.length == 2 && args[1] && args[1].toLowerCase() in commands) {
             output += "<strong>" + args[1].toLowerCase() + "</strong>: " + commands[args[1].toLowerCase()].about + "";
         } else {
-            output += "TERM bash, version " + version + "-release (x86_64-pc-linux-gnu)<br>These shell commands are defined internally.  Type 'help' to see this list.<br>Type `help name' to find out more about the function 'name'.<br><br>";
+            output += "TERM bash, version " + version + "-release (x86_64-pc-linux-gnu)<br>These shell commands are defined internally.  Type 'help' to see this list.<br>Type 'help name' to find out more about the function 'name'.<br><br>";
             output += "";
 
             Object.keys(commands).forEach(function (cName) {
