@@ -1,11 +1,17 @@
+/*
+Optional: "VT323" font face from Google web fonts.
+The following import is a very retro terminal font, if you want to use it. If you
+do, remove this comment and un-comment this section and add 'VT323' to the
+beginning of the font-family list for #terminal{} below. You may need to increase
+the font size as it's quite small.
 @import url('https://fonts.googleapis.com/css?family=VT323');
+*/
 
 /**
 * Terminal container.
-* Important note: The "VT323" font face comes from Google web fonts.
 */
 #terminal {
-    font-family: 'VT323', monospace;
+    font-family: 'Courier New', monospace;
     width:       100%;
     height:      100%;
 }
