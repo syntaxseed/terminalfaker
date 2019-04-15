@@ -38,3 +38,6 @@
 #terminal .filsystem-f {
 
 }
+#terminal div{
+    word-wrap: break-word;
+}
