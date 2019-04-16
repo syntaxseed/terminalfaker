@@ -4,8 +4,8 @@ var originalFilesystem="<d name='/' path='/'>\
                 <c>\
                     <d name='stuff' path='/docs/stuff/'>\
                         <c>\
-                            <f name='reminder.txt' path='/docs/stuff/'>\
-                                <contents>Don't forget this.</contents>\
+                            <f name='secret.txt' path='/docs/stuff/'>\
+                                <contents>PxNmGkl6M+jDP4AYAKZET18SEnWD5qw5LIP9174lONWslF144K9VHFIk1JA=</contents>\
                             </f>\
                         </c>\
                     </d>\
@@ -32,7 +32,7 @@ var originalFilesystem="<d name='/' path='/'>\
                 </c>\
             </d>\
             <f name='cool.txt' path='/'>\
-                <contents>This is cool.</contents>\
+                <contents>There is a hidden command in this terminal called 'secret'.</contents>\
             </f>\
             </c>\
         </d>";

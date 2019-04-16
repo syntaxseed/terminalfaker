@@ -1,4 +1,4 @@
-var version = '1.3.4';  // Used in various commands.
+var version = '1.3.5';  // Used in various commands.
 
 var Terminal = (function() {
     var history = (localStorage.getItem("history") ? localStorage.getItem("history").split(",") : []),
@@ -14,7 +14,8 @@ var Terminal = (function() {
 
     // Auxiliary functions
 
-    var resetPrompt = function(terminal, prompt, clear=false) {
+    var resetPrompt = function(terminal, prompt, clear) {
+
         var newPrompt = prompt.parentNode.cloneNode(true);
 
         // Make sure all other prompts are no longer editable:
@@ -26,7 +27,7 @@ var Terminal = (function() {
         if(self.prompt) {
             newPrompt.querySelector(".prompt").textContent = self.prompt;
         }
-        if(clear){
+        if((typeof clear !== 'undefined') && clear){
             while(terminal.firstChild) terminal.removeChild(terminal.firstChild);
         }
         terminal.appendChild(newPrompt);
@@ -125,23 +126,19 @@ var Terminal = (function() {
         if(path.substr(0, 1) != '/'){
             // Search in and below current directory (add given path to the current path):
             var selector = parseFilePathToSelector(self.path+path);
-            console.log(selector);
             var foundNode = self.filesystemPointer.querySelector(selector);
         }
         if (typeof foundNode === 'undefined' || foundNode == null || foundNode.nodeName != 'f'){
             // Not found in current directory, search globally:
             selector = parseFilePathToSelector(path);
-            console.log(selector);
             var foundNode = self.filesystem.querySelector(selector);
             if (typeof foundNode === 'undefined' || foundNode == null || foundNode.nodeName != 'f'){
                 return false;
             }
         }
 
-        console.log(foundNode);
         // We found a node! Output the file contents.
         return foundNode.querySelector('contents').innerHTML;
-
     }
 
     self.changeDirectory = function(path){
@@ -231,7 +228,19 @@ var Terminal = (function() {
             if(event.keyCode != 13) return false;
 
             var enteredComand = prompt.textContent.trim();
-            var input = enteredComand.split(" ");
+
+            // Split entered command by spaces, but not spaces in quotes.
+            var input = enteredComand.match(/(?=\S)[^"\s]*(?:"[^\\"]*(?:\\[\s\S][^\\"]*)*"[^"\s]*)*/g);
+            // Remove surrounding quotes if any.
+            input = input.map(function(e) {
+                if (e.charAt(0) === '"' && e.charAt(e.length -1) === '"')
+                {
+                    return e.substr(1,e.length -2);
+                }else{
+                    return e;
+                }
+              });
+
             if(input[0]){
                 if(input[0].toLowerCase() in self.commands) {
                     runCommand(elem, input[0].toLowerCase(), input);
@@ -249,15 +258,17 @@ var Terminal = (function() {
         elem.querySelector(".input").focus();
 
         self.term = elem;
+
+        // Run the custom boot loader, unless disabled.
+        if ((typeof useBootLoader === 'undefined') || useBootLoader) {
+            self.bootTerminalMessage(document.getElementById("terminal"), document.getElementById("boot"), bootMessageLines, 0);
+        }
+
         return self;
     };
 
     return self;
 })();
 
-function extendObject(obj, src) {
-    for (var key in src) {
-        if (src.hasOwnProperty(key)) obj[key] = src[key];
-    }
-    return obj;
-}
+// extendObject function
+function extendObject(n,r){for(var e in r)r.hasOwnProperty(e)&&(n[e]=r[e]);return n}

@@ -3,7 +3,7 @@ var builtInCommands = {};
 
 
 builtInCommands.cat = {
-    about: "cat [arg]<br>&nbsp;&nbsp;Display the contents of the specified file.",
+    about: "cat [file]<br>&nbsp;&nbsp;Display the contents of the specified file.",
     exe: function (args) {
         if(args.length != 2){
             return "No such file.";
@@ -20,7 +20,7 @@ builtInCommands.cat = {
  * Change into a directory.
  **/
 builtInCommands.cd = {
-    about: "cd [arg]<br>&nbsp;&nbsp;Change directory to the specified path.",
+    about: "cd [path]<br>&nbsp;&nbsp;Change directory to the specified path.",
     exe: function (args) {
         if(args.length != 2){
             return "";
@@ -44,22 +44,50 @@ builtInCommands.clear = {
     }
 };
 
+/**
+ * Encryption commands which use a password a string.
+ **/
+builtInCommands.encrypt = {
+    about:  "encrypt [message] [password]<br>&nbsp;&nbsp;Encrypt a provided message using the password.",
+    exe:  function(args) {
+            if(args.length != 3){
+                return "encrypt: Invalid number of arguments.";
+            }
+            var result = Tea.encrypt(args[1], args[2]);
+            console.log(result);
+            return result;
+    }
+};
+builtInCommands.decrypt = {
+    about:  "decrypt [encoded] [password]<br>&nbsp;&nbsp;Decrypt a provided message using the password.",
+    exe:  function(args) {
+            if(args.length != 3){
+                return "decrypt: Invalid number of arguments.";
+            }
+            var result = Tea.decrypt(args[1], args[2]);
+            console.log(result);
+            return result;
+    }
+};
+
 
 /**
  * Lists all available commands or the help for a given command.
  **/
 builtInCommands.help = {
-    about: "help [arg]<br>&nbsp;&nbsp;Show a list of available commands, or help for a specific command.",
+    about: "help [command]<br>&nbsp;&nbsp;Show a list of available commands, or help for a specific command.",
     exe: function (args) {
         var output = "";
         if (args.length == 2 && args[1] && args[1].toLowerCase() in commands) {
             output += "<strong>" + args[1].toLowerCase() + "</strong>: " + commands[args[1].toLowerCase()].about + "";
         } else {
-            output += "TERM bash, version " + version + "-release (x86_64-pc-linux-gnu)<br>These shell commands are defined internally.  Type 'help' to see this list.<br>Type 'help name' to find out more about the function 'name'.<br><br>";
+            output += "TERMFAKE bash, version " + version + "-release (x86_64-pc-linux-gnu)<br>These shell commands are defined internally.  Type 'help' to see this list.<br>Type 'help name' to find out more about the function 'name'.<br><br>";
             output += "";
 
-            Object.keys(commands).forEach(function (cName) {
-                output += "<strong>" + cName + "</strong>&nbsp;&nbsp;";
+            Object.keys(commands).sort().forEach(function (cName) {
+                if( !commands[cName].hidden ){
+                    output += "<strong>" + cName + "</strong>&nbsp;&nbsp;";
+                }
             });
         }
         output += "<br><br>";

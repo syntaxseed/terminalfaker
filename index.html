@@ -34,29 +34,33 @@
   </head>
   <body>
     <h1><a href="https://github.com/syntaxseed/terminalfaker">Terminal Faker Demo</a></h1>
+
     <div id="terminal">
-      <p id="boot">Type 'help' to get started.</p>
-      <p class="hidden">
-        <span class="prompt"></span>
-        <span contenteditable="true" class="input" autocorrect="off" autocapitalize="none" autocomplete="off"> </span>
-      </p>
+        <p id="boot">Type 'help' to get started.</p>
+        <p class="hidden">
+            <span class="prompt"></span>
+           <span contenteditable="true" class="input" autocorrect="off" autocapitalize="none" autocomplete="off"> </span>
+        </p>
     </div>
-    <script src="js/terminal.js"></script>
+
+    <script src="js/bundle.min.js"></script>
+    <!-- The above minified bundle contains:
+    <script src="js/src/terminal.js"></script>
+    <script src="js/src/boot.js"></script>
+    <script src="js/src/crypto.js"></script>
+    <script src="js/src/system.js"></script>-->
     <script src="js/filesystem.js"></script>
-    <script src="js/boot.js"></script>
-    <script src="js/system.js"></script>
     <script src="js/commands.js"></script>
 
     <script>
-        // Extend the built-in system commands with the custom commands from commands.js.
-        var commands = extendObject(builtInCommands, customCommands);
+        // Whether to use the longer boot load screen. If this is missing, defaults to true.
+        var useBootLoader = true;
 
         // Set the command prompt style:
         var customPrompt = function () { return "guest@TermFake ("+Terminal.path+") $ ";};
 
         // Initialize the terminal:
         var term = Terminal.init(document.getElementById("terminal"), commands, customPrompt);
-
     </script>
   </body>
 </html>

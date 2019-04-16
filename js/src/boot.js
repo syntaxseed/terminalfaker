@@ -6,4 +6,3 @@ var bootMessageLines = [
             "By Sherri Wheeler (SyntaxSeed.com)<br>",
             "Ready. Type 'help' to get started.<br><br>"
         ];
-Terminal.bootTerminalMessage(document.getElementById("terminal"), document.getElementById("boot"), bootMessageLines, 0);
