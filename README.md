@@ -1,6 +1,16 @@
 Terminal Faker
 ===========
 
+<div align="center">
+    <img src="https://img.shields.io/github/tag/syntaxseed/terminalfaker.svg"
+        alt="GitHub tag (latest SemVer)">
+    <img src="https://img.shields.io/badge/JavaScript-ES5-brightgreen.svg"
+        alt="Javascript: ES5">
+    <a href="https://twitter.com/intent/follow?screen_name=syntaxseed">
+        <img src="https://img.shields.io/twitter/follow/syntaxseed.svg?style=social&logo=twitter"
+            alt="follow on Twitter"></a>
+</div>
+
 ![Logo](favicon.png)
 
 An extensible pseudo-terminal in Javascript.
