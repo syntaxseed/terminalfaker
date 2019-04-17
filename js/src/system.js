@@ -12,6 +12,7 @@ builtInCommands.cat = {
         if(result === false){
             return "No such file, or argument is a directory.";
         }
+        result = (result + '').replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1' + '<br>' + '$2');
         return result;
     }
 }
@@ -86,7 +87,7 @@ builtInCommands.help = {
 
             Object.keys(commands).sort().forEach(function (cName) {
                 if( !commands[cName].hidden ){
-                    output += "<strong>" + cName + "</strong>&nbsp;&nbsp;";
+                    output += "<strong>" + cName + "</strong>&nbsp; ";
                 }
             });
         }

@@ -10,7 +10,7 @@ var originalFilesystem="<d name='/' path='/'>\
                         </c>\
                     </d>\
                     <f name='shoplist.txt' path='/docs/'>\
-                        <contents>A, B, C.</contents>\
+                        <contents>-Apples\n-Bananas\n-Cookies</contents>\
                     </f>\
                     <f name='ok.txt' path='/docs/'>\
                         <contents>I am ok.</contents>\

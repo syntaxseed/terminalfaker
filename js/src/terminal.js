@@ -158,6 +158,26 @@ var Terminal = (function() {
             return true;
         }
 
+        // Search for the directory.
+        var foundNode = self.findDirectory(path);
+        if(foundNode === false){
+            return false;
+        }
+
+        // We found a node! Update the saved pointer and path.
+        self.path = foundNode.getAttribute('path');
+        if (self.path.substr(-1) != '/') self.path += '/'; // If there isn't a trailing slash, add one.
+        path = self.path;
+        self.filesystemPointer = foundNode;
+
+        return true;
+    };
+
+    /**
+     * Returns the filesystem node at the given path. False if not found.
+     * Searches relative to the current path first.
+     */
+    self.findDirectory = function(path){
         var foundNode = null;
         var selector = '';
         if(path.substr(0, 1) != '/'){
@@ -173,14 +193,7 @@ var Terminal = (function() {
                 return false;
             }
         }
-
-        // We found a node! Update the saved pointer and path.
-        self.path = foundNode.getAttribute('path');
-        if (self.path.substr(-1) != '/') self.path += '/'; // If there isn't a trailing slash, add one.
-        path = self.path;
-        self.filesystemPointer = foundNode;
-
-        return true;
+        return foundNode;
     };
 
 
@@ -231,6 +244,13 @@ var Terminal = (function() {
 
             // Split entered command by spaces, but not spaces in quotes.
             var input = enteredComand.match(/(?=\S)[^"\s]*(?:"[^\\"]*(?:\\[\s\S][^\\"]*)*"[^"\s]*)*/g);
+
+            if( input == null){
+                resetPrompt(elem, prompt, false);
+                event.preventDefault();
+                return;
+            }
+
             // Remove surrounding quotes if any.
             input = input.map(function(e) {
                 if (e.charAt(0) === '"' && e.charAt(e.length -1) === '"')
@@ -239,7 +259,7 @@ var Terminal = (function() {
                 }else{
                     return e;
                 }
-              });
+            });
 
             if(input[0]){
                 if(input[0].toLowerCase() in self.commands) {
