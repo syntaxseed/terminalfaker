@@ -55,7 +55,6 @@ builtInCommands.encrypt = {
                 return "encrypt: Invalid number of arguments.";
             }
             var result = Tea.encrypt(args[1], args[2]);
-            console.log(result);
             return result;
     }
 };
@@ -66,7 +65,6 @@ builtInCommands.decrypt = {
                 return "decrypt: Invalid number of arguments.";
             }
             var result = Tea.decrypt(args[1], args[2]);
-            console.log(result);
             return result;
     }
 };
@@ -139,11 +137,65 @@ builtInCommands.ls = {
 }
 
 /**
+ * Reset the local storage data for this app.
+ **/
+builtInCommands.reboot = {
+    about: "reboot<br>&nbsp;&nbsp;Reboot the terminal and reset saved environment.",
+    exe: function () {
+        localStorage.removeItem("filesystem");
+        localStorage.removeItem("history");
+        term.initSession();
+        term.bootTerminalStart(document.getElementById("terminal"));
+        return "";
+    }
+};
+
+/**
+ * Delete a file with the given name.
+ **/
+builtInCommands.rm = {
+    about: "rm [name]<br>&nbsp;&nbsp;Delete the file with the specified name in the current directory.",
+    exe: function (args) {
+        if(args.length == 1){
+            return "No filename specified.";
+        }
+        if(args.length > 2){
+            return "Too many parameters supplied.";
+        }
+        var result = term.deleteFile(args[1]);
+        if(result !== true){
+            return result;
+        }
+        return "";
+    }
+}
+
+/**
+ * Create an empty file with the given name.
+ **/
+builtInCommands.touch = {
+    about: "touch [name]<br>&nbsp;&nbsp;Create a file with the specified name in the current directory.",
+    exe: function (args) {
+        if(args.length == 1){
+            return "No filename specified.";
+        }
+        if(args.length > 2){
+            return "Too many parameters supplied.";
+        }
+        var result = term.makeFile(args[1]);
+        if(result !== true){
+            return result;
+        }
+        return "";
+    }
+}
+
+/**
  * Get the version, author and repo information for Terminal Faker.
  */
 builtInCommands.version = {
     about: "version<br>&nbsp;&nbsp;Display the version and attribution of this terminal application.",
     exe: function () {
-        return "Terminal Faker: version " + version + " https://github.com/syntaxseed/terminalfaker by Sherri Wheeler.";
+        return "Terminal Faker: version " + version + " (https://github.com/syntaxseed/terminalfaker) by Sherri Wheeler.";
     }
 };
