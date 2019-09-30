@@ -46,6 +46,18 @@ builtInCommands.clear = {
 };
 
 /**
+ * Echos text to the terminal
+ **/
+builtInCommands.echo = {
+    about: "echo [string]&nbsp;display a line of text",
+    exe: function(args) {
+        var result = args.slice();
+        result.shift();
+        return result.join(" ");
+   }
+};
+
+/**
  * Encryption commands which use a password a string.
  **/
 builtInCommands.encrypt = {
