@@ -156,5 +156,10 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 * **Sherri Wheeler** - *Author & Maintainer* - [SyntaxSeed](https://github.com/SyntaxSeed)
 * **Martin Splitt** - *Based on his original Terminal.js* - [AVGP/terminal.js](https://github.com/AVGP/terminal.js)
 
+## Contributors
+
+* **Ben Brunton** - Additional commands.
+
+
 ## License
 MIT License - basically: Do whatever you feel like, but don't sue me when it blows up.

@@ -49,7 +49,7 @@ builtInCommands.clear = {
  * Echos text to the terminal
  **/
 builtInCommands.echo = {
-    about: "echo [string]&nbsp;display a line of text",
+    about: "echo [string]<br>&nbsp;&nbsp;Display a line of text.",
     exe: function(args) {
         var result = args.slice();
         result.shift();
