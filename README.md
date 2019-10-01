@@ -158,7 +158,7 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 
 ## Contributors
 
-* **Ben Brunton** - Additional commands.
+* **Ben Brunton** - [benbrunton](https://github.com/benbrunton)
 
 
 ## License
