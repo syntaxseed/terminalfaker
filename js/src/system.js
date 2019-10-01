@@ -211,3 +211,13 @@ builtInCommands.version = {
         return "Terminal Faker: version " + version + " (https://github.com/syntaxseed/terminalfaker) by Sherri Wheeler.";
     }
 };
+
+/**
+ * Print name of current/working directory
+ */
+builtInCommands.pwd = {
+    about: "print name of current/working directory",
+    exe: function () {
+        return term.path
+    }
+}
