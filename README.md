@@ -146,7 +146,7 @@ To see a full example including loading in system commands and the nicer boot me
 ## ToDo
 
 * Basic filesystem (in progress).
-* cat, touch, editing of files, mkdir, rmdir ,rm.
+* Editing of files, mkdir, rmdir, etc.
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
@@ -156,10 +156,11 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 * **Sherri Wheeler** - *Author & Maintainer* - [SyntaxSeed](https://github.com/SyntaxSeed)
 * **Martin Splitt** - *Based on his original Terminal.js* - [AVGP/terminal.js](https://github.com/AVGP/terminal.js)
 
-## Contributors
+### Contributors
 
 * **Ben Brunton** - [benbrunton](https://github.com/benbrunton)
 * **Sahil Bondre** - [godcrampy](https://github.com/godcrampy)
 
 ## License
+
 MIT License - basically: Do whatever you feel like, but don't sue me when it blows up.
