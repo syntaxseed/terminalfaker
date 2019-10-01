@@ -159,7 +159,7 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 ## Contributors
 
 * **Ben Brunton** - [benbrunton](https://github.com/benbrunton)
-
+* **Sahil Bondre** - [godcrampy](https://github.com/godcrampy)
 
 ## License
 MIT License - basically: Do whatever you feel like, but don't sue me when it blows up.

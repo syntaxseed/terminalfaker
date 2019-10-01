@@ -149,6 +149,16 @@ builtInCommands.ls = {
 }
 
 /**
+ * Print the name of the current/working directory.
+ */
+builtInCommands.pwd = {
+    about: "pwd<br>&nbsp;&nbsp;Print the name of the current working directory.",
+    exe: function () {
+        return term.path
+    }
+}
+
+/**
  * Reset the local storage data for this app.
  **/
 builtInCommands.reboot = {
@@ -211,13 +221,3 @@ builtInCommands.version = {
         return "Terminal Faker: version " + version + " (https://github.com/syntaxseed/terminalfaker) by Sherri Wheeler.";
     }
 };
-
-/**
- * Print name of current/working directory
- */
-builtInCommands.pwd = {
-    about: "pwd<br>&nbsp;&nbsp;Print the name of the current working directory.",
-    exe: function () {
-        return term.path
-    }
-}
