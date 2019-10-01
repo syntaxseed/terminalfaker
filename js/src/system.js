@@ -1,34 +1,5 @@
 var builtInCommands = {};
 
-
-/** 
- * Base64 encodes a string.
-*/
-builtInCommands.base64enc = {
-    about: "base64enc [string]<br>&nbsp;&nbsp;Base64 encode a string.",
-    exe: function (args) {
-        if(args.length == 1){
-            return "No string specified.";
-        }
-        args.shift();
-        return btoa(args.join(" "));
-    }
-}
-
-/** 
- * Base64 decodes a string.
-*/
-builtInCommands.base64dec = {
-    about: "base64dec [string]<br>&nbsp;&nbsp;Base64 decode a string.",
-    exe: function (args) {
-        if(args.length == 1){
-            return "No string specified.";
-        }
-        args.shift();
-        return atob(args.join(" "));
-    }
-}
-
 builtInCommands.cat = {
     about: "cat [file]<br>&nbsp;&nbsp;Display the contents of the specified file.",
     exe: function (args) {
@@ -60,7 +31,6 @@ builtInCommands.cd = {
         return "";
     }
 }
-
 
 /**
  * Clears the terminal using a special flag on the resetPrompt function.

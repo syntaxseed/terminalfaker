@@ -7,6 +7,34 @@
 var customCommands = {};
 
 /**
+ * Base64 encodes a string.
+*/
+builtInCommands.base64enc = {
+    about: "base64enc [string]<br>&nbsp;&nbsp;Base64 encode a string.",
+    exe: function (args) {
+        if(args.length == 1){
+            return "No string specified.";
+        }
+        args.shift();
+        return btoa(args.join(" "));
+    }
+}
+
+/**
+ * Base64 decodes a string.
+*/
+builtInCommands.base64dec = {
+    about: "base64dec [string]<br>&nbsp;&nbsp;Base64 decode a string.",
+    exe: function (args) {
+        if(args.length == 1){
+            return "No string specified.";
+        }
+        args.shift();
+        return atob(args.join(" "));
+    }
+}
+
+/**
  * Print a simple message.
  **/
 customCommands.cow = {

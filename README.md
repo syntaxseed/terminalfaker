@@ -160,6 +160,7 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 
 * **Ben Brunton** - [benbrunton](https://github.com/benbrunton)
 * **Sahil Bondre** - [godcrampy](https://github.com/godcrampy)
+* **LapinoLapidus** - [LapinoLapidus](https://github.com/LapinoLapidus)
 
 ## License
 
