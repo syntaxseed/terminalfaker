@@ -1,7 +1,5 @@
 var builtInCommands = {};
 
-
-
 builtInCommands.cat = {
     about: "cat [file]<br>&nbsp;&nbsp;Display the contents of the specified file.",
     exe: function (args) {
@@ -33,7 +31,6 @@ builtInCommands.cd = {
         return "";
     }
 }
-
 
 /**
  * Clears the terminal using a special flag on the resetPrompt function.
