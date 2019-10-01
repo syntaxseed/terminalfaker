@@ -216,7 +216,7 @@ builtInCommands.version = {
  * Print name of current/working directory
  */
 builtInCommands.pwd = {
-    about: "print name of current/working directory",
+    about: "pwd<br>&nbsp;&nbsp;Print the name of the current working directory.",
     exe: function () {
         return term.path
     }
