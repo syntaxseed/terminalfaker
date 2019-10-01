@@ -2,9 +2,9 @@ var originalFilesystem="<d name='/' path='/'>\
             <c>\
             <d name='docs' path='/docs/'>\
                 <c>\
-                    <d name='stuff' path='/docs/stuff/'>\
+                    <d name='private' path='/docs/private/'>\
                         <c>\
-                            <f name='secret.txt' path='/docs/stuff/'>\
+                            <f name='secret.txt' path='/docs/private/'>\
                                 <contents>PxNmGkl6M+jDP4AYAKZET18SEnWD5qw5LIP9174lONWslF144K9VHFIk1JA=</contents>\
                             </f>\
                         </c>\
