@@ -185,20 +185,36 @@ builtInCommands.reboot = {
 
 /**
  * Delete a file with the given name.
+ * TODO: Check if error messages are rigth
  **/
 builtInCommands.rm = {
     about: "rm [name]<br>&nbsp;&nbsp;Delete the file with the specified name in the current directory.",
     exe: function (args) {
         if(args.length == 1){
-            return "No filename specified.";
+            throw new CmdValidationError('rm', "No filename specified.");
         }
         if(args.length > 2){
-            return "Too many parameters supplied.";
+            throw new CmdValidationError('rm', "Too many parameters supplied.");
         }
-        var result = term.deleteFile(args[1]);
-        if(result !== true){
-            return result;
+        const { listingUnit, path } = TerminalUtilities.getFsUnit(args);
+        if (!listingUnit) {
+            throw new CmdValidationError('rm', `${path}: No such file, or directory.`);
         }
+        const preparedPath = path.split('/').filter(it => it.length);
+        const targetUnit = term.tmp_fs.get(preparedPath);
+
+        // TODO: Add flag support here 
+        if (targetUnit.name === FS_ROOT_NAME) {
+            throw new CmdValidationError('rm', `${path}: Unable to remove root catalogue`);
+        }
+        if (targetUnit.isDir()) {
+            throw new CmdValidationError('rm', `${path}: Unable to remove directory.`);
+        }
+        
+        targetUnit
+            .parentDir
+            .remove(targetUnit)
+            
         return "";
     }
 }
@@ -210,15 +226,32 @@ builtInCommands.touch = {
     about: "touch [name]<br>&nbsp;&nbsp;Create a file with the specified name in the current directory.",
     exe: function (args) {
         if(args.length == 1){
-            return "No filename specified.";
+            throw new CmdValidationError('touch', "No filename specified.");
         }
+
         if(args.length > 2){
-            return "Too many parameters supplied.";
+            throw new CmdValidationError('touch', "Too many parameters supplied.");
         }
-        var result = term.makeFile(args[1]);
-        if(result !== true){
-            return result;
+
+        const { listingUnit, path } = TerminalUtilities.getFsUnit(args);
+        const preparedPath = path.split('/').filter(it => it.length);
+        const newFileName = path.split('/').pop();
+        preparedPath.pop();
+
+        if (!newFileName.match(/[A-z]+/)) {
+            throw new CmdValidationError('touch', `${path}: Invalid file name.`);
         }
+        if (listingUnit && listingUnit.isDir()) {
+            throw new CmdValidationError('touch', `${path}: Unable to create directory.`);
+        }
+        if (listingUnit && listingUnit.isFile()) {
+            throw new CmdValidationError('touch', `${path}: File already exists.`);
+        }
+        
+        term.tmp_fs
+            .get(preparedPath)
+            .add(new FsFile(newFileName, ""));
+
         return "";
     }
 }
