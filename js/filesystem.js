@@ -6,6 +6,12 @@ const FS_UNIT_TYPE = {
 
 const FS_ROOT_NAME = ':';
 
+/**
+ * Generic class for file system objects
+ * 
+ * @param {String} name 
+ * @param {String} type From FS_UNIT_TYPE enum 
+ */
 class FsUnit {
   constructor(name, type) {
     this.name = name;
@@ -20,6 +26,11 @@ class FsUnit {
     return this._content;
   }
 
+  /**
+   * Content size in bytes
+   * 
+   * @returns {Number}
+   */
   get size() {
     return this._size;
   }
@@ -39,6 +50,11 @@ class FsUnit {
     return path.reverse();
   }
 
+  /**
+   * Set link to parent FsUnit Object
+   * 
+   * @param {FsUnit} parentDir
+   */
   set parentDir(parentDir) {
     if (parentDir.type !== FS_UNIT_TYPE.DIR) {
       throw new Error('Parent should be FsDir!');
@@ -46,19 +62,36 @@ class FsUnit {
     this._parent = parentDir;
   }
 
+  /**
+   * Link to parent FsUnit Object
+   * 
+   * @returns {FsUnit} parentDir
+   */
   get parentDir() {
     return this._parent;
   }
 
+  /**
+   * @returns {Boolean}
+   */
   isFile() {
     return this.type === FS_UNIT_TYPE.FILE;
   }
 
+  /**
+   * @returns {Boolean}
+   */
   isDir() {
     return this.type === FS_UNIT_TYPE.DIR;
   }
 }
 
+/**
+ * File
+ * 
+ * @param {String} name
+ * @param {String} content
+ */
 class FsFile extends FsUnit {
   constructor(name, content) {
     super(name, FS_UNIT_TYPE.FILE);
@@ -68,18 +101,33 @@ class FsFile extends FsUnit {
     this._parent = undefined;
   }
 
+  /**
+   * Set file content. recalculate size
+   * 
+   * @param {String} content 
+   */
   update(content) {
     this._checkContent(content);
     this._content = content;
     this._setSize(content);
   }
 
+  /**
+   * Check is content is string
+   * 
+   * @param {String} content 
+   */
   _checkContent(content) {
     if (typeof content !== 'string') {
       throw new Error('Invalid file content');
     }
   }
 
+  /**
+   * Set content byte size
+   * 
+   * @param {String} content 
+   */
   _setSize(content) {    
     if (Blob) {
       this._size = new Blob([content]).size;
@@ -89,6 +137,11 @@ class FsFile extends FsUnit {
   }
 }
 
+/**
+ * Directory. Has a Map structure under the hood
+ * 
+ * @param {String} name
+ */
 class FsDir extends FsUnit {
   constructor(name) {
     super(name, FS_UNIT_TYPE.DIR);
@@ -96,10 +149,21 @@ class FsDir extends FsUnit {
     this._parent = this;
   }
 
+  /**
+   * Add file or dir into directory
+   * 
+   * @param {FsUnit} fsUnit 
+   */
   add(fsUnit) {
     return this.update(fsUnit);
   }
 
+  /**
+   * Add file or dir into directory
+   * 
+   * @param {FsUnit} fsUnit 
+   * @returns {FsUnit}
+   */
   update(fsUnit) {
     fsUnit.parentDir = this;
     
@@ -107,11 +171,22 @@ class FsDir extends FsUnit {
     return fsUnit;
   }
 
+  /**
+   * Delete directory content
+   * 
+   * @param {FsUnit} fsUnit 
+   * @returns {Boolean}
+   */
   remove(fsUnit) {
     this._content.delete(fsUnit.name);
     return true;
   }
 
+  /**
+   * Get directory content as list
+   * 
+   * @returns {FsUnit[]}
+   */
   get content() {
     const dirContent = [];
     for (const [key] of this._content) {
@@ -120,6 +195,12 @@ class FsDir extends FsUnit {
     return dirContent;
   }
 
+  /**
+   * Get directory byte size.
+   * Calculate overallsize of every element of dir
+   * 
+   * @returns {Number}
+   */
   get size() {
     let overallSize = 0;
     this.content.forEach(it => {
@@ -129,15 +210,23 @@ class FsDir extends FsUnit {
   }
 
   /**
+   * Get directory element by name
    * 
-   * @param {String} name
+   * @param {String} name Name of file or dir
+   * @returns {FsUnit|undefined}
    */
   get(name) {
     return this._content.get(name);
   }
 }
 
-
+/**
+ * File system management. Contain current user pointer.
+ * Creates root directory
+ * TODO: Add restore method, that will allow to recreate fs from plain object
+ * TOOD: Add toPlain method
+ * With such methods we could be able to store fs in user storage
+ */
 class FileSystem {
   constructor() {
     this.root = new FsDir(FS_ROOT_NAME);
@@ -145,6 +234,8 @@ class FileSystem {
   }
 
   /**
+   * Change pointer to passed directory
+   * TODO: Fix exception throwing
    * 
    * @param {String[]} pathTo 
    */
@@ -159,6 +250,11 @@ class FileSystem {
     this.pointer = unit;
   }
 
+  /**
+   * Get formatted path according to pointer
+   * 
+   * @returns {String}
+   */
   pwd() {
     let current = this.pointer;
     
@@ -174,18 +270,32 @@ class FileSystem {
     }
   }
 
+  /**
+   * Get root dir content
+   * 
+   * @returns {FsUnit[]}
+   */
   get content() {
     return this.root.content;
   }
 
+  /**
+   * Get byte size of root dir
+   * 
+   * @returns {Number}
+   */
   get size() {
     return this.root.size;
   }
 
   /**
+   * Create new dir or file in passed location.
+   * Check if location exists
+   * TODO: Fix exceptions
    * 
-   * @param {FsUnit} fsUnit 
-   * @param {String[]} fsUnitPath  Full path to fsUnit
+   * @param {FsUnit} fsUnit
+   * @param {String[]} fsUnitPath  Full path to fsUnit. Should not contain new unit name
+   * @returns {FsUnit} 
    */
   add(fsUnit, fsUnitPath) {
     if (fsUnitPath.length > 1) {
@@ -219,9 +329,10 @@ class FileSystem {
   }
 
   /**
+   * Get file or dir by full path
    * 
    * @param {String[]} fsUnitPath 
-   * @returns FsUnit
+   * @returns {FsUnit|undefined}
    */
   get(fsUnitPath) {
     if (fsUnitPath.length >= 1) {
@@ -242,6 +353,7 @@ class FileSystem {
   }
 }
 
+// Here we create initial file system structure
 var myFs = new FileSystem();
 
 myFs
@@ -296,6 +408,12 @@ myFs
   .add(new FsFile('cool.txt', 'There is a hidden command in this terminal called \'secret\'.'), []);
 
 
+/**
+ * Convert FsUnit object into xml format
+ * 
+ * @param {FsUnit} fsUnit 
+ * @returns {String}
+ */
 function fsUnitToXML(fsUnit) {
   if (fsUnit.type == FS_UNIT_TYPE.FILE) {
     const filePath = fsUnit.path.slice(0, -1);
@@ -309,6 +427,7 @@ function fsUnitToXML(fsUnit) {
     `;
 
   } else if (fsUnit.type == FS_UNIT_TYPE.DIR) {
+    // Recursevly process directory element
     return `
       <d name='${fsUnit.name}' path='/${fsUnit.path.join('/')}/'>
         <c>
@@ -319,7 +438,12 @@ function fsUnitToXML(fsUnit) {
   }
 }
 
-
+/**
+ * Convert whole file system into xml
+ * 
+ * @param {FileSystem} fs
+ * @returns {String} 
+ */
 function fsToXML(fs) {
   return `
     <d name='/' path='/'>
@@ -330,4 +454,5 @@ function fsToXML(fs) {
   `
 }
 
+// Creation of initial fs in xml
 var originalFilesystem = fsToXML(myFs);

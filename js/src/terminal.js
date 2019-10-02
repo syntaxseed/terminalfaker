@@ -4,6 +4,8 @@
  * Refactoring - created a Path class. Use it!
  */
 
+ // TODO: Migrate to ES6
+
 var version = '1.4.3';  // Used in various commands.
 
 function Path() {
