@@ -164,7 +164,10 @@ builtInCommands.reboot = {
         localStorage.removeItem("filesystem");
         localStorage.removeItem("history");
         term.initSession();
-        term.bootTerminalStart(document.getElementById("terminal"));
+        setTimeout(function() {
+            // Delay terminal boot to wait for initializing session to complete.
+            term.bootTerminalStart(document.getElementById("terminal"));
+        }, 5);
         return "";
     }
 };

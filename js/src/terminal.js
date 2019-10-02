@@ -4,7 +4,7 @@
  * Refactoring - created a Path class. Use it!
  */
 
-var version = '1.4.3';  // Used in various commands.
+var version = '1.4.4';  // Used in various commands.
 
 function Path() {
 
