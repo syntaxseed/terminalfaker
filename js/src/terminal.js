@@ -128,6 +128,8 @@ var Terminal = (function () {
     var KEY_UP = 38,
         KEY_DOWN = 40,
         KEY_TAB = 9,
+        KEY_ENTER = 13,
+        KEY_BACKSPACE = 8,
         MAX_HISTORY = 20;
 
     //var path ="/";
@@ -220,6 +222,91 @@ var Terminal = (function () {
 
 
     // Terminal functions
+
+    self.loginToTerminal = function (terminal) {
+        if (!self.useLoginProtection) return;
+
+        setTimeout(function() {
+            var loginElement = document.getElementById("login");
+            var usernameContainerElement = document.createElement('div');
+            var passwordContainerElement = document.createElement('div');
+
+            function createLabeledInput(baseId, label, value = '') {
+                var labelElement = document.createElement('span');
+                labelElement.setAttribute('id', baseId + '-label');
+                labelElement.innerHTML = label;
+
+                var inputElement = document.createElement('input');
+                inputElement.setAttribute('id', baseId);
+                inputElement.classList.add('labeled-input');
+                inputElement.value = value;
+
+                return [labelElement, inputElement];
+            }
+
+            var [usernameLabelElement, usernameElement] = createLabeledInput('login-username', 'Login: ');
+            var [passwordLabelElement, passwordElement] = createLabeledInput('login-password', 'Password: ', '');
+
+            usernameElement.addEventListener('keypress', function (e) {
+                if (self.isLoggedIn || e.keyCode != KEY_ENTER) return;
+
+                e.preventDefault();
+
+                var password = [];
+
+                document.getElementById('login-username').setAttribute('disabled', 'true');
+
+                passwordElement.addEventListener('keydown', function(e) {
+                    if (self.isLoggedIn) return;
+                    if (e.which === KEY_BACKSPACE) {
+                        password.pop();
+                    }
+                });
+
+                passwordElement.addEventListener('keypress', function(e) {
+                    if (self.isLoggedIn) return;
+
+                    e.preventDefault();
+
+                    if (e.keyCode != KEY_ENTER) {
+                        password.push(String.fromCharCode(e.which));
+                    } else {
+                        var username = document.getElementById('login-username').value;
+                        var passwordString = password.join('');
+
+                        var loginWelcomeMessageElement = document.createElement('p');
+                        loginElement.append(loginWelcomeMessageElement);
+                        /* TODO validate username and password */
+                        if (username === 'admin' && passwordString === 'admin') {
+                            loginWelcomeMessageElement.innerText = 'You are logged in as ' + username;
+
+                            setTimeout(function() {
+                                self.isLoggedIn = true;
+                                self.initPrompt(terminal);
+                            }, 0)
+                        } else {
+                            loginWelcomeMessageElement.innerText = 'Failed to log in. Refresh the page and try again';
+                        }
+                    }
+                });
+
+                passwordContainerElement.append(passwordLabelElement);
+                passwordContainerElement.append(passwordElement);
+
+                loginElement.append(passwordContainerElement);
+
+                passwordElement.focus();
+            });
+
+            usernameContainerElement.append(usernameLabelElement);
+            usernameContainerElement.append(usernameElement);
+
+            loginElement.append(usernameContainerElement);
+            loginElement.append(passwordContainerElement);
+
+            usernameElement.focus();
+        },  useBootLoader? bootMessageLines.length * 500 : 500);
+    };
 
     self.bootTerminalStart = function (terminal) {
 
@@ -391,84 +478,98 @@ var Terminal = (function () {
         return true;
     };
 
+    self.initPrompt = function(elem) {
+        if (self.useLoginProtection && !self.isLoggedIn) return;
+
+        elem.querySelector(".prompt").innerHTML = self.customPrompt();
+        elem.querySelector(".input").focus();
+    };
 
     self.init = function (elem, commands, customPrompt) {
         self.commands = commands;
         self.customPrompt = customPrompt;
+        self.useLoginProtection = typeof useLoginProtection !== 'undefined' && useLoginProtection;
+        self.isLoggedIn = false;
 
         self.initSession();
 
         elem.addEventListener("keydown", function (event) {
-            if (event.keyCode == KEY_TAB) {
-                var prompt = event.target;
-                var suggestions = autoCompleteInput(prompt.textContent.replace(/\s+/g, ""));
+            if ((self.useLoginProtection && self.isLoggedIn) || !self.useLoginProtection) {
+                if (event.keyCode == KEY_TAB) {
+                    var prompt = event.target;
+                    var suggestions = autoCompleteInput(prompt.textContent.replace(/\s+/g, ""));
 
-                if (suggestions.length == 1) {
-                    prompt.textContent = suggestions[0];
-                    var range = document.createRange();
-                    var sel = window.getSelection();
-                    range.setStart(prompt.childNodes[0], suggestions[0].length);
-                    range.collapse(true);
-                    sel.removeAllRanges();
-                    sel.addRange(range);
+                    if (suggestions.length == 1) {
+                        prompt.textContent = suggestions[0];
+                        var range = document.createRange();
+                        var sel = window.getSelection();
+                        range.setStart(prompt.childNodes[0], suggestions[0].length);
+                        range.collapse(true);
+                        sel.removeAllRanges();
+                        sel.addRange(range);
+                    }
+
+                    event.preventDefault(true);
+                    return false;
                 }
-
-                event.preventDefault(true);
-                return false;
             }
         });
 
         elem.addEventListener("keyup", function (event) {
-            if (self.historyIndex < 0) return;
-            browseHistory(event.target, event.keyCode);
+            if ((self.useLoginProtection && self.isLoggedIn) || !self.useLoginProtection) {
+                if (self.historyIndex < 0) return;
+                browseHistory(event.target, event.keyCode);
+            }
         });
 
         elem.addEventListener("keypress", function (event) {
-            var prompt = event.target;
-            if (event.keyCode != 13) return false;
+            if ((self.useLoginProtection && self.isLoggedIn) || !self.useLoginProtection) {
+                var prompt = event.target;
+                if (event.keyCode != 13) return false;
 
-            var enteredComand = prompt.textContent.trim();
+                var enteredComand = prompt.textContent.trim();
 
-            // Split entered command by spaces, but not spaces in quotes.
-            var input = enteredComand.match(/(?=\S)[^"\s]*(?:"[^\\"]*(?:\\[\s\S][^\\"]*)*"[^"\s]*)*/g);
+                // Split entered command by spaces, but not spaces in quotes.
+                var input = enteredComand.match(/(?=\S)[^"\s]*(?:"[^\\"]*(?:\\[\s\S][^\\"]*)*"[^"\s]*)*/g);
 
-            if (input == null) {
-                resetPrompt(elem, prompt, false);
+                if (input == null) {
+                    resetPrompt(elem, prompt, false);
+                    event.preventDefault();
+                    return;
+                }
+
+                // Remove surrounding quotes if any.
+                input = input.map(function (e) {
+                    if (e.charAt(0) === '"' && e.charAt(e.length - 1) === '"') {
+                        return e.substr(1, e.length - 2);
+                    } else {
+                        return e;
+                    }
+                });
+
+                if (input[0]) {
+                    if (input[0].toLowerCase() in self.commands) {
+                        runCommand(elem, input[0].toLowerCase(), input);
+                        updateHistory(prompt.textContent);
+                    } else {
+                        elem.innerHTML += input[0] + ": command not found";
+                    }
+                }
+
+                // Reset the prompt, and the given array of command also clear the screen.
+                resetPrompt(elem, prompt, (['clear', 'reboot'].indexOf(input[0].toLowerCase()) >= 0));
                 event.preventDefault();
-                return;
             }
-
-            // Remove surrounding quotes if any.
-            input = input.map(function (e) {
-                if (e.charAt(0) === '"' && e.charAt(e.length - 1) === '"') {
-                    return e.substr(1, e.length - 2);
-                } else {
-                    return e;
-                }
-            });
-
-            if (input[0]) {
-                if (input[0].toLowerCase() in self.commands) {
-                    runCommand(elem, input[0].toLowerCase(), input);
-                    updateHistory(prompt.textContent);
-                } else {
-                    elem.innerHTML += input[0] + ": command not found";
-                }
-            }
-
-            // Reset the prompt, and the given array of command also clear the screen.
-            resetPrompt(elem, prompt, (['clear', 'reboot'].indexOf(input[0].toLowerCase()) >= 0));
-            event.preventDefault();
         });
 
-        elem.querySelector(".prompt").innerHTML = self.customPrompt();
-        elem.querySelector(".input").focus();
+        self.loginToTerminal(elem);
+        self.initPrompt(elem);
 
         self.term = elem;
 
         // Run the custom boot loader, unless disabled.
         //if ((typeof useBootLoader === 'undefined') || useBootLoader) {
-        self.bootTerminalStart(document.getElementById("terminal"));
+        self.bootTerminalStart(elem);
         //}
 
         return self;
