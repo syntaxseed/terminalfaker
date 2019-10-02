@@ -160,10 +160,10 @@ builtInCommands.pwd = {
  **/
 builtInCommands.reboot = {
     about: "reboot<br>&nbsp;&nbsp;Reboot the terminal and reset saved environment.",
-    exe: function () {
+    exe: async function () {
         localStorage.removeItem("filesystem");
         localStorage.removeItem("history");
-        term.initSession();
+        await term.initSession();
         term.bootTerminalStart(document.getElementById("terminal"));
         return "";
     }
