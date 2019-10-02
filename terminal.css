@@ -28,6 +28,19 @@ the font size as it's quite small.
     display:        inline-block;
 }
 
+#terminal .labeled-input {
+    height:         1em;
+    min-width:      3em;
+    outline-color:  transparent;
+    border:         none;
+    display:        inline-block;
+    font-size: inherit;
+    font-weight: inherit;
+    font-family: inherit;
+    color: inherit;
+    background: transparent;
+}
+
 #terminal .prompt{
     color:#00ff99;
 }
