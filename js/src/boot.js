@@ -1,3 +1,10 @@
+/**
+ * The bootloader message that will appear line by line on terminal boot.
+ * This is the 'long' format.
+ * To skip this, set useBootLoader to false in the on-page configuration.
+ * In HTML format.
+ */
+
 var bootMessageLines = [
             "System loading...<br>",
             (new Date()).toString()+"<br>",
