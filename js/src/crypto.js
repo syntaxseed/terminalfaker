@@ -1,12 +1,51 @@
 "use strict";
 
-function _instanceof(left, right) { if (right != null && typeof Symbol !== "undefined" && right[Symbol.hasInstance]) { return right[Symbol.hasInstance](left); } else { return left instanceof right; } }
+/**
+* Determines whether first input is the same instanceof second input.
+*
+* @param {any} left: first-input
+* @param {any} right: second-input
+* @return {boolean} isInstance: whether first is an instance of second.
+*/
+function _instanceof(left, right) {
+  if (right != null && typeof Symbol !== "undefined" && right[Symbol.hasInstance]) {
+    return right[Symbol.hasInstance](left);
+  } else {
+      return left instanceof right;
+    }
+}
 
-function _classCallCheck(instance, Constructor) { if (!_instanceof(instance, Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+/**
+* Throws an error if classCallCheck.
+*
+* @param {any} instance: the item being checked for classCallCheck
+* @param {Class} Constructor: the Constructor variety
+* @throws {error} Cannot call a class as a function if it is not a Constructor instance.
+*/
+function _classCallCheck(instance, Constructor) {
+  if (!_instanceof(instance, Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
 
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+/**
+* Defines a list of properties on a object target
+*
+*
+*/
+function _defineProperties(target, props) {
+  for (var i = 0; i < props.length; i++) {
+    var descriptor = props[i];
+    descriptor.enumerable = descriptor.enumerable || false;
+    descriptor.configurable = true;
+    if ("value" in descriptor)
+      descriptor.writable = true;
+      Object.defineProperty(target, descriptor.key, descriptor);
+  }
+}
 
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+function _createClass(Constructor, protoProps, staticProps) {
+  if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
 // The following has been transpiled from the original ES6 - ES5. The code above was added by BabelJS.
 
