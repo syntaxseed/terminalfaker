@@ -1,7 +1,6 @@
 /**
- * In PROGRESS :
- * When rebooting - run the boot loader. Currently it's doing so, then clearing the prompt. I think.
- * Refactoring - created a Path class. Use it!
+ * TerminalFaker
+ * A JavaScript Bash terminal simulation.
  */
 
 var version = '1.4.4';  // Used in various commands.
@@ -128,6 +127,7 @@ var Terminal = (function () {
     var KEY_UP = 38,
         KEY_DOWN = 40,
         KEY_TAB = 9,
+        KEY_ENTER = 13,
         MAX_HISTORY = 20;
 
     //var path ="/";
@@ -425,7 +425,7 @@ var Terminal = (function () {
 
         elem.addEventListener("keypress", function (event) {
             var prompt = event.target;
-            if (event.keyCode != 13) return false;
+            if (event.keyCode != KEY_ENTER) return false;
 
             var enteredComand = prompt.textContent.trim();
 

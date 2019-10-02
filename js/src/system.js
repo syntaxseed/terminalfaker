@@ -1,3 +1,8 @@
+/**
+ * Built-in System Commands
+ * Modelled after Linux Bash commands.
+ */
+
 var builtInCommands = {};
 
 builtInCommands.cat = {

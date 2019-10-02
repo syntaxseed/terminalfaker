@@ -1,3 +1,9 @@
+/**
+ * The initial state of the filesystem in XML format.
+ * As users make changes the new filesystem is stored in local storage.
+ * Reset to this initial state with the reboot command.
+ */
+
 var originalFilesystem="<d name='/' path='/'>\
             <c>\
             <d name='docs' path='/docs/'>\

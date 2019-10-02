@@ -1,9 +1,9 @@
 /**
  * Custom Terminal Commands
- * -----------------------------
  * In this file, define custom commands for your terminal application.
  * This will overwrite any built-in system commands if they exist.
  */
+
 var customCommands = {};
 
 /**
