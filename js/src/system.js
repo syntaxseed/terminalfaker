@@ -1,17 +1,130 @@
 var builtInCommands = {};
 
+class CmdValidationError extends Error {
+    /**
+     * 
+     * @param {String} cmd Command name 
+     * @param {String} msg Error msg
+     */
+    constructor(cmd, msg) {
+        super(`${cmd}: ${msg}`);
+        this.type = 'CmdValidationError';
+    }
+}
+
+
+/**
+ * Function parsing path for commands like: cmd [flags] [path]
+ * Parse absolute and relative paths. If relative - takes current dir
+ * and resolves with '..' notation
+ * 
+ * @param {String[]} args Args in format ['cmd', 'flag1', 'flag2', 'path']
+ * @returns {Object} root
+ * @returns {FsUnit} [root.listingUnit] Dir or File
+ * @returns {String} root.path
+ */
+function getFsUnit(args) {
+    let listingUnit = term.tmp_fs.pointer;
+    const path = args.slice(1).filter(it => it.indexOf('-') !== 0)[0] || '.'; 
+    if (args.length > 1) {
+        if (path !== '.') {
+            const startDir = path.indexOf('/') === 0 ? 
+                '/' : 
+                term.tmp_fs.pwd();
+            const preparedPath = term.pathMgr.resolveToArray(startDir, path);
+            listingUnit = term.tmp_fs.get(preparedPath);
+            if (!listingUnit) {
+                return {
+                    path
+                };
+            }
+        }
+    }
+    return {
+        listingUnit,
+        path
+    };
+}
+
+/**
+ * Take every element from arg array with dash '-',
+ * remove duplicates and invalid flags
+ * 
+ * @param {String[]} args In format ['ls', '-la', '/'] 
+ * @param {String[]} supportedFlagsList Such as ['a', 'l]
+ * @returns {Set}
+ */
+function parseFlags(args, supportedFlagsList) {
+    return new Set(
+        args
+        .filter(option => option.indexOf('-') === 0)
+        .map(option => option.replace('-', ''))
+        .join('')
+        .split('')
+        .filter(option => supportedFlagsList.includes(option))
+    );
+}
+
+
+/**
+ * Format date to DD MMM HH:mm
+ * 
+ * @param {Date} date Js Date type
+ * @returns {String}
+ */
+function formatDate(date) {
+    const [
+        _weekDay,
+        day,
+        mon,
+        _year,
+        time
+    ] = date.toUTCString().split(' ');
+    return [day, mon, time.split(':').slice(0, -1).join(':')].join(' ');
+}
+
+/**
+ * Render for ls -l flag
+ * 
+ * @param {FsUnit} fsUnit File, Dir or Link
+ * @returns {String}
+ */
+function lsRenderFullLine(fsUnit) {
+    const unitType = fsUnit.isFile() ? '-' : 'd';
+    return `<span>${unitType}rw-r--r--</span>&nbsp;&nbsp;` +
+        `<span>11</span>&nbsp;&nbsp;` +
+        `<span>guest</span>&nbsp;&nbsp;` +
+        `<span>guest</span>&nbsp;&nbsp;` +
+        `<span>${fsUnit.size}</span>&nbsp;&nbsp;` +
+        `<span>${formatDate(new Date(fsUnit.lastMod))}</span>&nbsp;&nbsp;` +
+        `<span class='filesystem-${fsUnit.type}'>${fsUnit.name}</span>`;
+}
+
+/**
+ * Render for default ls
+ * 
+ * @param {FsUnit} fsUnit File, Dir or Link
+ * @returns {String}
+ */
+function lsRenderOneLine(fsUnit) {
+    return `<span class='filesystem-${fsUnit.type}'>${fsUnit.name}</span>`;
+}
+
+
 builtInCommands.cat = {
     about: "cat [file]<br>&nbsp;&nbsp;Display the contents of the specified file.",
     exe: function (args) {
+
         if(args.length != 2){
-            return "No such file.";
+            throw new CmdValidationError('cat', "No such file.");
         }
-        var result = term.catFile(args[1]);
-        if(result === false){
-            return "No such file, or argument is a directory.";
+        const { listingUnit, path } = getFsUnit(args);
+
+        if (!listingUnit || (listingUnit && !listingUnit.isFile())) {
+            throw new CmdValidationError('cat', `${path}: No such file, or argument is a directory.`);
         }
-        result = (result + '').replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1' + '<br>' + '$2');
-        return result;
+        const content = listingUnit.content || '';
+        return content.replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1' + '<br>' + '$2');
     }
 }
 
@@ -129,19 +242,31 @@ builtInCommands.history = {
  **/
 builtInCommands.ls = {
     about: "ls [-l]<br>&nbsp;&nbsp;List directory contents.<br>&nbsp;&nbsp;-l list contents vertically.",
-    exe: function (args) {
-        var listing = "";
-        var children = Array.prototype.slice.call(term.filesystemPointer.querySelector('c').children);
-        children.forEach(function(element, index){
-            listing += "<span class='filesystem-"+element.nodeName+"'>"+element.getAttribute('name')+"</span>";
-            if( args[1] && args[1] == "-l"){
-                listing += "<br>";
-            }else{
-                listing += "&nbsp;&nbsp;";
-            }
-        });
+    exe: (args) => {
+        // TOOD: Add to constant
+        const supportedFlagsList = ['a', 'l'];
+        const { listingUnit, path } = getFsUnit(args);
+        if (!listingUnit) {
+            throw new CmdValidationError('ls', `${path}: No such file or directory`);
+        }
+        const flagList = parseFlags(args, supportedFlagsList)
 
-        return listing;
+        switch (listingUnit.type) {
+            case FS_UNIT_TYPE.FILE:
+                return flagList.has('l') ? 
+                    [lsRenderFullLine(listingUnit)].join('<br>') :
+                    [lsRenderOneLine(listingUnit)].join('<br>');
+            case FS_UNIT_TYPE.DIR: 
+                const dirContent = flagList.has('a') ?
+                    listingUnit.content :
+                    listingUnit.content.filter(it => it.name[0] !== '.');
+
+                return flagList.has('l') ?
+                    dirContent.map(fsUnit => lsRenderFullLine(fsUnit)).join('<br>') :
+                    dirContent.map(fsUnit => lsRenderOneLine(fsUnit)).join('&nbsp;&nbsp;'); 
+            default:
+                return ''
+        }
     }
 }
 
@@ -151,7 +276,7 @@ builtInCommands.ls = {
 builtInCommands.pwd = {
     about: "pwd<br>&nbsp;&nbsp;Print the name of the current working directory.",
     exe: function () {
-        return term.path
+        return term.tmp_fs.pwd();
     }
 }
 

@@ -49,6 +49,14 @@ class FsUnit {
   get parentDir() {
     return this._parent;
   }
+
+  isFile() {
+    return this.type === FS_UNIT_TYPE.FILE;
+  }
+
+  isDir() {
+    return this.type === FS_UNIT_TYPE.DIR;
+  }
 }
 
 class FsFile extends FsUnit {
@@ -56,14 +64,14 @@ class FsFile extends FsUnit {
     super(name, FS_UNIT_TYPE.FILE);
     this._checkContent(content);
     this._content = content;
-    this._size = this._setSize(content);
+    this._setSize(content);
     this._parent = undefined;
   }
 
   update(content) {
     this._checkContent(content);
     this._content = content;
-    this._size = this._setSize(content);
+    this._setSize(content);
   }
 
   _checkContent(content) {
@@ -72,9 +80,12 @@ class FsFile extends FsUnit {
     }
   }
 
-  _setSize(content) {
-    this._size = new Blob([content]).size;
-    // return this._size = Buffer.byteLength(content, 'utf-8');
+  _setSize(content) {    
+    if (Blob) {
+      this._size = new Blob([content]).size;
+    } else {
+      this._size = Buffer.byteLength(content, 'utf-8');
+    }
   }
 }
 
@@ -231,7 +242,13 @@ class FileSystem {
   }
 }
 
-const myFs = new FileSystem();
+var myFs = new FileSystem();
+
+myFs
+  .add(new FsDir('.tmp-dir'), [])
+
+myFs
+  .add(new FsFile('.hidden', 'There is a hidden file.'), []);
 
 myFs
   .add(new FsDir('docs'), [])
@@ -260,9 +277,13 @@ myFs
   .get(['docs', 'private'])
   .add(new FsFile('secret.txt', 'PxNmGkl6M+jDP4AYAKZET18SEnWD5qw5LIP9174lONWslF144K9VHFIk1JA='))
 
-  myFs
+myFs
   .get(['docs', 'private'])
   .add(new FsDir('opt'))
+
+myFs
+  .get(['docs'])
+  .add(new FsDir('tmp'))
 
 myFs
   .add(new FsDir('more'), [])
