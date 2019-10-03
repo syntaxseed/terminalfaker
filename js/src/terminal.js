@@ -277,7 +277,7 @@ var Terminal = (function () {
                         var loginWelcomeMessageElement = document.createElement('p');
                         loginElement.append(loginWelcomeMessageElement);
                         /* TODO validate username and password */
-                        if (username === 'admin' && passwordString === 'admin') {
+                        if (username === self.validUsername && passwordString === self.validPassword) {
                             loginWelcomeMessageElement.innerText = 'You are logged in as ' + username;
 
                             setTimeout(function() {
@@ -489,7 +489,13 @@ var Terminal = (function () {
         self.commands = commands;
         self.customPrompt = customPrompt;
         self.useLoginProtection = typeof useLoginProtection !== 'undefined' && useLoginProtection;
+        self.validUsername = typeof validUsername !== 'undefined' && validUsername ? validUsername : '';
+        self.validPassword = typeof validPassword !== 'undefined' && validPassword ? validPassword : '';
         self.isLoggedIn = false;
+
+        if (self.useLoginProtection && (!self.validUsername || !self.validPassword)) {
+            throw new Error('Valid username or valid password are not defined in index.html!');
+        }
 
         self.initSession();
 
