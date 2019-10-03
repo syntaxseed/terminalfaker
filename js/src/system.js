@@ -238,7 +238,7 @@ builtInCommands.touch = {
         const newFileName = path.split('/').pop();
         preparedPath.pop();
 
-        if (!newFileName.match(/[A-z]+/)) {
+        if (!term.pathMgr.isValidFilename(newFileName)) {
             throw new CmdValidationError('touch', `${path}: Invalid file name.`);
         }
         if (listingUnit && listingUnit.isDir()) {
