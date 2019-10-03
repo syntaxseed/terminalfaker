@@ -114,7 +114,7 @@ builtInCommands.help = {
  * Lists the recent builtInCommands.
  **/
 builtInCommands.history = {
-    about: "history [-c]<br>&nbsp;&nbsp;Display the list of recent commands.<br>&nbsp;&nbsp;-c clear the history list.",
+    about: "history [-OPTIONS]<br>&nbsp;&nbsp;Display the list of recent commands.<br>&nbsp;&nbsp;-c clear the history list.",
     exe: function (args) {
         if (args.length == 2 && args[1] == "-c") {
             localStorage.setItem("history", []);
@@ -135,7 +135,7 @@ builtInCommands.history = {
  * Lists the files and directories in the current path.
  **/
 builtInCommands.ls = {
-    about: "ls [-l]<br>&nbsp;&nbsp;List directory contents.<br>&nbsp;&nbsp;-l list contents vertically.",
+    about: "ls [-OPTIONS]<br>&nbsp;&nbsp;List directory contents.<br>&nbsp;&nbsp;-l use a long listing format.<br>&nbsp;&nbsp;-a do not ignore entries starting with a period (.).",
     exe: (args) => {
         // TOOD: Add to constant
         const supportedFlagsList = ['a', 'l'];
@@ -144,20 +144,20 @@ builtInCommands.ls = {
             throw new CmdValidationError('ls', `${path}: No such file or directory`);
         }
         const flagList = TerminalUtilities.parseFlags(args, supportedFlagsList)
-        
+
         switch (listingUnit.type) {
             case FS_UNIT_TYPE.FILE:
-                return flagList.has('l') ? 
+                return flagList.has('l') ?
                     [TerminalUtilities.lsRenderFullLine(listingUnit)].join('<br>') :
                     [TerminalUtilities.lsRenderOneLine(listingUnit)].join('<br>');
-            case FS_UNIT_TYPE.DIR: 
+            case FS_UNIT_TYPE.DIR:
                 const dirContent = flagList.has('a') ?
                     listingUnit.content :
                     listingUnit.content.filter(it => it.name[0] !== '.');
 
                 return flagList.has('l') ?
                     dirContent.map(fsUnit => TerminalUtilities.lsRenderFullLine(fsUnit)).join('<br>') :
-                    dirContent.map(fsUnit => TerminalUtilities.lsRenderOneLine(fsUnit)).join('&nbsp;&nbsp;'); 
+                    dirContent.map(fsUnit => TerminalUtilities.lsRenderOneLine(fsUnit)).join('&nbsp;&nbsp;');
             default:
                 return ''
         }
@@ -211,18 +211,18 @@ builtInCommands.rm = {
         const preparedPath = path.split('/').filter(it => it.length);
         const targetUnit = term.tmp_fs.get(preparedPath);
 
-        // TODO: Add flag support here 
+        // TODO: Add flag support here
         if (targetUnit.name === FS_ROOT_NAME) {
             throw new CmdValidationError('rm', `${path}: Unable to remove root catalogue`);
         }
         if (targetUnit.isDir()) {
             throw new CmdValidationError('rm', `${path}: Unable to remove directory.`);
         }
-        
+
         targetUnit
             .parentDir
             .remove(targetUnit)
-            
+
         return "";
     }
 }
@@ -255,7 +255,7 @@ builtInCommands.touch = {
         if (listingUnit && listingUnit.isFile()) {
             throw new CmdValidationError('touch', `${path}: File already exists.`);
         }
-        
+
         term.tmp_fs
             .get(preparedPath)
             .add(new FsFile(newFileName, ""));

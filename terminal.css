@@ -22,7 +22,7 @@ the font size as it's quite small.
 */
 #terminal .input {
     height:         1em;
-    min-width:      3em;
+    min-width:      4em;
     outline-color:  transparent;
     border:         none;
     display:        inline-block;

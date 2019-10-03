@@ -3,16 +3,15 @@
  * A JavaScript Bash terminal simulation.
  */
 
- // TODO: Migrate to ES6
-var version = '1.4.4';  // Used in various commands.
+var version = '1.4.5';  // Used in various commands.
 
 function Path() {
 
     this.path = "/";
 
     /**
-     * 
-     * @param {String} path1 
+     *
+     * @param {String} path1
      * @param {String} path2 Unix-like path. Absolute or relative
      * @returns {String[]}
      */
@@ -20,7 +19,7 @@ function Path() {
         const goingBackwardsSymb = '..';
         const mainPath = path1.split('/').filter(it => it.length);
         const foreignPath = path2.split('/').filter(it => it.length);
-    
+
         if (foreignPath.includes('..')) {
             foreignPath.forEach(pathElement => {
                 if (pathElement !== goingBackwardsSymb) {
@@ -35,8 +34,8 @@ function Path() {
             return mainPath;
         } else {
             return mainPath.concat(foreignPath);
-        } 
-    } 
+        }
+    }
 
     /**
      * Determine if the passed value is the proper format for a directory.
@@ -45,8 +44,13 @@ function Path() {
         if (filename == '') {
             return false;
         }
-        var newFilename = filename.replace(/[^A-Za-z\d\-_~]/, '');   // Remove all but allowed chars.
+        var newFilename = filename.replace(/[^A-Za-z\d\.\-_~]/, '');   // Remove all but allowed chars.
         if (newFilename.length != filename.length) {
+            return false;
+        }
+        // Check for more than 1 period in a row. TODO: Do we even need this protection? Don't want people creating a dir called '..'.
+        var foundPeriods = newFilename.match(/\.\./g);
+        if (foundPeriods != null && foundPeriods.length > 1) {
             return false;
         }
         return true;
@@ -60,12 +64,11 @@ function Path() {
             return false;
         }
         var newFilename = filename.replace(/[^A-Za-z\d\.\-_~]/, '');   // Remove all but allowed chars.
-        newFilename = newFilename.replace(/^\.|\.$/g, '');  // Remove periods if at beginning or end.
         if (newFilename.length != filename.length) {
             return false;
         }
-        // Check for more than 1 period.
-        var foundPeriods = newFilename.match(/\./g);
+        // Check for more than 1 period in a row. TODO: Do we even need this protection? Don't want people creating a dir called '..'.
+        var foundPeriods = newFilename.match(/\.\./g);
         if (foundPeriods != null && foundPeriods.length > 1) {
             return false;
         }
@@ -311,22 +314,22 @@ var Terminal = (function () {
     self.changeDirectory = function (path) {
         // if (!self.pathMgr.isValidDirectoryPath(path)) {
         //     return false;
-        // }  
+        // }
         if (path === '.') {
             return true;
         }
         try {
-            const startDir = path.indexOf('/') === 0 ? 
-                '/' : 
+            const startDir = path.indexOf('/') === 0 ?
+                '/' :
                 self.tmp_fs.pwd();
             const preparedPath = self.pathMgr.resolveToArray(startDir, path);
-            
+
             self.tmp_fs.cd(preparedPath);
         } catch {
             return false;
         }
         self.path = self.tmp_fs.pwd();
-       
+
         return true;
 
     };
