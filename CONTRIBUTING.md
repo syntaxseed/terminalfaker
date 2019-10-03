@@ -18,8 +18,18 @@ meaningful and helpful.
 
 1. Ensure any development or build artifacts are removed before commiting your work.
 2. Use clear and descriptive comments, commit messages and pull request details.
-3. Check other PRs for conflicts with your own.
-4. Increase the version number found in terminal.js. Use SemVer.
+3. If you have many commits in your PR, please rebase and squash them together.
+4. If the main project has been updated you may need to rebase your PR onto master.
+5. Check other PRs for conflicts with your own.
+6. Increase the version number found in terminal.js. Use SemVer.
+
+### Help With PRs and Git
+
+* Q: I need to change something in my branch after I submitted a PR. Can I?
+  * A: Yes, you can add more commits to your branch and the PR will be updated with them. Please add a comment to the PR to explain what you added.
+
+* Q: I was asked to rebase my PR. What do I do?
+  * A: Changes were made to master or other PRs were merged in and your PR is no longer based on the latest code and likely has conflicts. You can update your fork, then replay your changes onto the latest version so that merging your PR will be possible. Here is a guide: https://github.com/edx/edx-platform/wiki/How-to-Rebase-a-Pull-Request
 
 ## Code of Conduct
 
