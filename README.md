@@ -149,7 +149,7 @@ To see a full example including loading in system commands and the nicer boot me
 * Editing of files, mkdir, rmdir, etc.
 
 ## Contributing
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+See the [Contributing Guide](CONTRIBUTING.md). Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
 ## Authors
 
