@@ -1,45 +1,59 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <title>Terminal Faker Demo</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no"
+    />
     <meta name="theme-color" content="#000" />
     <link rel="icon" type="image/png" href="favicon.png" />
     <link rel="stylesheet" href="terminal.css" />
     <style>
-        /* Over-write some styles or define on-page styles. */
-        body {
-            background: black;
-            color:      white;
+      /* Over-write some styles or define on-page styles. */
+      body {
+        background: black;
+        color: white;
 
-            width:  100%;
-            height: 100%;
+        width: 100%;
+        height: 100%;
 
-            padding: 4px;
-            margin:  0;
+        padding: 4px;
+        margin: 0;
 
-            font-size:1.1em;
+        font-size: 1.1em;
 
-            box-sizing: border-box;
-        }
-        h1 {
-            font-size: 1.4em;
-        }
-        h1 a{
-            color: #999;
-            font-size:0.8em;
-            text-decoration: none;
-        }
+        box-sizing: border-box;
+      }
+      h1 {
+        font-size: 1.4em;
+      }
+      h1 a {
+        color: #999;
+        font-size: 0.8em;
+        text-decoration: none;
+      }
     </style>
-</head>
-<body>
-    <h1><a href="https://github.com/syntaxseed/terminalfaker">Terminal Faker Demo</a></h1>
+  </head>
+  <body>
+    <h1>
+      <a href="https://github.com/syntaxseed/terminalfaker"
+        >Terminal Faker Demo</a
+      >
+    </h1>
 
     <div id="terminal">
-        <p class="hidden">
-            <span class="prompt"></span>
-           <span contenteditable="true" class="input" autocorrect="off" autocapitalize="none" autocomplete="off"> </span>
-        </p>
+      <p class="hidden">
+        <span class="prompt"></span>
+        <span
+          contenteditable="true"
+          class="input"
+          autocorrect="off"
+          autocapitalize="none"
+          autocomplete="off"
+        >
+        </span>
+      </p>
     </div>
 
     <script src="js/bundle.min.js"></script>
@@ -52,17 +66,29 @@
     <script src="js/commands.js"></script>
 
     <script>
-        // ** On-Page Configuration: **
+      // ** On-Page Configuration: **
 
-        // Whether to use the longer boot load screen. If this is missing, defaults to true.
-        var useBootLoader = true;
+      // Whether to use the longer boot load screen. If this is missing, defaults to true.
+      var useBootLoader = true;
 
-        // Set the command prompt style:
-        var customPrompt = function () { return "guest@TermFake ("+Terminal.path+") $ ";};
+      // Set the command prompt style:
+      var customPrompt = function() {
+        return "guest@TermFake (" + Terminal.path + ") $ ";
+      };
 
-        // Initialize & show the terminal:
-        var term = Terminal.init(document.getElementById("terminal"), commands, customPrompt);
+      // Initialize & show the terminal:
+      var term = Terminal.init(
+        document.getElementById("terminal"),
+        commands,
+        customPrompt
+      );
     </script>
-
-</body>
+    <script>
+      document.addEventListener("click", () => {
+        document
+          .querySelector("#terminal p:last-child span:last-child")
+          .focus();
+      });
+    </script>
+  </body>
 </html>
