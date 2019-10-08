@@ -14,10 +14,7 @@ class TerminalUtilities {
     const path = args.slice(1).filter(it => it.indexOf('-') !== 0)[0] || '.'; 
     if (args.length > 1) {
         if (path !== '.') {
-            const startDir = path.indexOf('/') === 0 ? 
-                '/' : 
-                term.tmp_fs.pwd();
-            const preparedPath = term.pathMgr.resolveToArray(startDir, path);
+            const preparedPath = TerminalUtilities.createFullPath(path);
             listingUnit = term.tmp_fs.get(preparedPath);
             if (!listingUnit) {
                 return {
@@ -30,6 +27,20 @@ class TerminalUtilities {
         listingUnit,
         path
     };
+  }
+
+  /**
+   * Create absolute path from passed param. Param could be
+   * relative or absolute path
+   * 
+   * @param {String} path Path to filesistem unit in unix format
+   * @returns {String[]}
+   */
+  static createFullPath(pathToUnit) {
+    const startDir = pathToUnit.indexOf('/') === 0 ? 
+      '/' : 
+      term.tmp_fs.pwd();
+    return term.pathMgr.resolveToArray(startDir, pathToUnit);
   }
 
  /**

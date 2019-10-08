@@ -242,10 +242,10 @@ builtInCommands.touch = {
         }
 
         const { listingUnit, path } = TerminalUtilities.getFsUnit(args);
-        const preparedPath = path.split('/').filter(it => it.length);
-        const newFileName = path.split('/').pop();
-        preparedPath.pop();
-
+        
+        const preparedPath = TerminalUtilities.createFullPath(path);
+        const newFileName = preparedPath.pop();
+        
         if (!term.pathMgr.isValidFilename(newFileName)) {
             throw new CmdValidationError('touch', `${path}: Invalid file name.`);
         }
