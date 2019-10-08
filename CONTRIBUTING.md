@@ -6,7 +6,7 @@ Please note we have a code of conduct (below), please follow it in all your inte
 
 ## Code Style and Formating Guide
 
-- Restrict Javascript to **ES 2015 (ES6)** standard to avoid need for transpiling and maximize browser support.
+- Restrict Javascript to **ES6** standard to avoid need for transpiling and maximize browser support.
 - Always comment code sections with jsdoc style comments for methods, functions and classes. Keep comments
 meaningful and helpful.
 - Comment complex or interesting sections of code.
