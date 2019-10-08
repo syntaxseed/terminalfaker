@@ -3,7 +3,7 @@
  * A JavaScript Bash terminal simulation.
  */
 
-var version = '1.4.6';  // Used in various commands.
+var version = '1.4.5';  // Used in various commands.
 
 function Path() {
 
