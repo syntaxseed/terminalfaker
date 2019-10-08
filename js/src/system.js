@@ -8,15 +8,17 @@ var builtInCommands = {};
 builtInCommands.cat = {
     about: "cat [file]<br>&nbsp;&nbsp;Display the contents of the specified file.",
     exe: function (args) {
+
         if(args.length != 2){
-            return "No such file.";
+            throw new CmdValidationError('cat', "No such file.");
         }
-        var result = term.catFile(args[1]);
-        if(result === false){
-            return "No such file, or argument is a directory.";
+        const { listingUnit, path } = TerminalUtilities.getFsUnit(args);
+
+        if (!listingUnit || (listingUnit && !listingUnit.isFile())) {
+            throw new CmdValidationError('cat', `${path}: No such file, or argument is a directory.`);
         }
-        result = (result + '').replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1' + '<br>' + '$2');
-        return result;
+        const content = listingUnit.content || '';
+        return content.replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1' + '<br>' + '$2');
     }
 }
 
@@ -112,7 +114,7 @@ builtInCommands.help = {
  * Lists the recent builtInCommands.
  **/
 builtInCommands.history = {
-    about: "history [-c]<br>&nbsp;&nbsp;Display the list of recent commands.<br>&nbsp;&nbsp;-c clear the history list.",
+    about: "history [-OPTIONS]<br>&nbsp;&nbsp;Display the list of recent commands.<br>&nbsp;&nbsp;-c clear the history list.",
     exe: function (args) {
         if (args.length == 2 && args[1] == "-c") {
             localStorage.setItem("history", []);
@@ -133,20 +135,32 @@ builtInCommands.history = {
  * Lists the files and directories in the current path.
  **/
 builtInCommands.ls = {
-    about: "ls [-l]<br>&nbsp;&nbsp;List directory contents.<br>&nbsp;&nbsp;-l list contents vertically.",
-    exe: function (args) {
-        var listing = "";
-        var children = Array.prototype.slice.call(term.filesystemPointer.querySelector('c').children);
-        children.forEach(function(element, index){
-            listing += "<span class='filesystem-"+element.nodeName+"'>"+element.getAttribute('name')+"</span>";
-            if( args[1] && args[1] == "-l"){
-                listing += "<br>";
-            }else{
-                listing += "&nbsp;&nbsp;";
-            }
-        });
+    about: "ls [-OPTIONS]<br>&nbsp;&nbsp;List directory contents.<br>&nbsp;&nbsp;-l use a long listing format.<br>&nbsp;&nbsp;-a do not ignore entries starting with a period (.).",
+    exe: (args) => {
+        // TOOD: Add to constant
+        const supportedFlagsList = ['a', 'l'];
+        const { listingUnit, path } = TerminalUtilities.getFsUnit(args);
+        if (!listingUnit) {
+            throw new CmdValidationError('ls', `${path}: No such file or directory`);
+        }
+        const flagList = TerminalUtilities.parseFlags(args, supportedFlagsList)
 
-        return listing;
+        switch (listingUnit.type) {
+            case FS_UNIT_TYPE.FILE:
+                return flagList.has('l') ?
+                    [TerminalUtilities.lsRenderFullLine(listingUnit)].join('<br>') :
+                    [TerminalUtilities.lsRenderOneLine(listingUnit)].join('<br>');
+            case FS_UNIT_TYPE.DIR:
+                const dirContent = flagList.has('a') ?
+                    listingUnit.content :
+                    listingUnit.content.filter(it => it.name[0] !== '.');
+
+                return flagList.has('l') ?
+                    dirContent.map(fsUnit => TerminalUtilities.lsRenderFullLine(fsUnit)).join('<br>') :
+                    dirContent.map(fsUnit => TerminalUtilities.lsRenderOneLine(fsUnit)).join('&nbsp;&nbsp;');
+            default:
+                return ''
+        }
     }
 }
 
@@ -156,7 +170,7 @@ builtInCommands.ls = {
 builtInCommands.pwd = {
     about: "pwd<br>&nbsp;&nbsp;Print the name of the current working directory.",
     exe: function () {
-        return term.path
+        return term.tmp_fs.pwd();
     }
 }
 
@@ -179,20 +193,36 @@ builtInCommands.reboot = {
 
 /**
  * Delete a file with the given name.
+ * TODO: Check if error messages are rigth
  **/
 builtInCommands.rm = {
     about: "rm [name]<br>&nbsp;&nbsp;Delete the file with the specified name in the current directory.",
     exe: function (args) {
         if(args.length == 1){
-            return "No filename specified.";
+            throw new CmdValidationError('rm', "No filename specified.");
         }
         if(args.length > 2){
-            return "Too many parameters supplied.";
+            throw new CmdValidationError('rm', "Too many parameters supplied.");
         }
-        var result = term.deleteFile(args[1]);
-        if(result !== true){
-            return result;
+        const { listingUnit, path } = TerminalUtilities.getFsUnit(args);
+        if (!listingUnit) {
+            throw new CmdValidationError('rm', `${path}: No such file, or directory.`);
         }
+        const preparedPath = path.split('/').filter(it => it.length);
+        const targetUnit = term.tmp_fs.get(preparedPath);
+
+        // TODO: Add flag support here
+        if (targetUnit.name === FS_ROOT_NAME) {
+            throw new CmdValidationError('rm', `${path}: Unable to remove root catalogue`);
+        }
+        if (targetUnit.isDir()) {
+            throw new CmdValidationError('rm', `${path}: Unable to remove directory.`);
+        }
+
+        targetUnit
+            .parentDir
+            .remove(targetUnit)
+
         return "";
     }
 }
@@ -204,15 +234,32 @@ builtInCommands.touch = {
     about: "touch [name]<br>&nbsp;&nbsp;Create a file with the specified name in the current directory.",
     exe: function (args) {
         if(args.length == 1){
-            return "No filename specified.";
+            throw new CmdValidationError('touch', "No filename specified.");
         }
+
         if(args.length > 2){
-            return "Too many parameters supplied.";
+            throw new CmdValidationError('touch', "Too many parameters supplied.");
         }
-        var result = term.makeFile(args[1]);
-        if(result !== true){
-            return result;
+
+        const { listingUnit, path } = TerminalUtilities.getFsUnit(args);
+        
+        const preparedPath = TerminalUtilities.createFullPath(path);
+        const newFileName = preparedPath.pop();
+        
+        if (!term.pathMgr.isValidFilename(newFileName)) {
+            throw new CmdValidationError('touch', `${path}: Invalid file name.`);
         }
+        if (listingUnit && listingUnit.isDir()) {
+            throw new CmdValidationError('touch', `${path}: Unable to create directory.`);
+        }
+        if (listingUnit && listingUnit.isFile()) {
+            throw new CmdValidationError('touch', `${path}: File already exists.`);
+        }
+
+        term.tmp_fs
+            .get(preparedPath)
+            .add(new FsFile(newFileName, ""));
+
         return "";
     }
 }

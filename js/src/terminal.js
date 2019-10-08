@@ -3,11 +3,39 @@
  * A JavaScript Bash terminal simulation.
  */
 
-var version = '1.4.4';  // Used in various commands.
+var version = '1.4.6';  // Used in various commands.
 
 function Path() {
 
     this.path = "/";
+
+    /**
+     *
+     * @param {String} path1
+     * @param {String} path2 Unix-like path. Absolute or relative
+     * @returns {String[]}
+     */
+    Path.prototype.resolveToArray = function(path1, path2) {
+        const goingBackwardsSymb = '..';
+        const mainPath = path1.split('/').filter(it => it.length);
+        const foreignPath = path2.split('/').filter(it => it.length);
+
+        if (foreignPath.includes('..')) {
+            foreignPath.forEach(pathElement => {
+                if (pathElement !== goingBackwardsSymb) {
+                    mainPath.push(pathElement);
+                } else {
+                    if (!mainPath[mainPath.length - 1]) {
+                        throw new Error('Invalid path');
+                    }
+                    mainPath.pop();
+                }
+            });
+            return mainPath;
+        } else {
+            return mainPath.concat(foreignPath);
+        }
+    }
 
     /**
      * Determine if the passed value is the proper format for a directory.
@@ -16,8 +44,13 @@ function Path() {
         if (filename == '') {
             return false;
         }
-        var newFilename = filename.replace(/[^A-Za-z\d\-_~]/, '');   // Remove all but allowed chars.
+        var newFilename = filename.replace(/[^A-Za-z\d\.\-_~]/, '');   // Remove all but allowed chars.
         if (newFilename.length != filename.length) {
+            return false;
+        }
+        // Check for more than 1 period in a row. TODO: Do we even need this protection? Don't want people creating a dir called '..'.
+        var foundPeriods = newFilename.match(/\.\./g);
+        if (foundPeriods != null && foundPeriods.length > 1) {
             return false;
         }
         return true;
@@ -31,12 +64,11 @@ function Path() {
             return false;
         }
         var newFilename = filename.replace(/[^A-Za-z\d\.\-_~]/, '');   // Remove all but allowed chars.
-        newFilename = newFilename.replace(/^\.|\.$/g, '');  // Remove periods if at beginning or end.
         if (newFilename.length != filename.length) {
             return false;
         }
-        // Check for more than 1 period.
-        var foundPeriods = newFilename.match(/\./g);
+        // Check for more than 1 period in a row. TODO: Do we even need this protection? Don't want people creating a dir called '..'.
+        var foundPeriods = newFilename.match(/\.\./g);
         if (foundPeriods != null && foundPeriods.length > 1) {
             return false;
         }
@@ -122,6 +154,7 @@ function Path() {
 
 var Terminal = (function () {
     var self = {};
+    self.tmp_fs;
     self.pathMgr = new Path();
 
     var KEY_UP = 38,
@@ -158,7 +191,15 @@ var Terminal = (function () {
 
 
     var runCommand = function (terminal, cmd, args) {
-        terminal.innerHTML += "<div>" + (self.commands[cmd].exe(args)) + "</div>";
+        let cmdRunResult = '';
+        try {
+            cmdRunResult = self.commands[cmd].exe(args);
+        } catch (error) {
+            if (error.type === 'CmdValidationError') {
+                cmdRunResult = error.message;
+            }
+        }
+        terminal.innerHTML += `<div>${cmdRunResult}</div>`;
     };
 
     var updateHistory = function (cmd) {
@@ -213,7 +254,7 @@ var Terminal = (function () {
         } else if ('outerHTML' in self.filesystem) {
             strFilesystem = self.filesystem.outerHTML;
         } else {
-            strFilesystem = originalFilesystem; // Saving doesn't work.
+            strFilesystem = originalFilesystemXML; // TODO: Saving doesn't work.
         }
         localStorage.setItem("filesystem", strFilesystem);
     }
@@ -259,62 +300,38 @@ var Terminal = (function () {
         }
     };
 
+    /**
+     * @param {string} path
+     */
     self.catFile = function (path) {
-        // First, is the path present in the current location (add given path to the current path)?
-        var foundNode = null;
-        var selector = '';
-        if (path.substr(0, 1) != '/') {
-            // Search in and below current directory (add given path to the current path):
-            var selector = self.pathMgr.parseFilePathToSelector(self.path + path);
-            var foundNode = self.filesystemPointer.querySelector(selector);
+        const file = self.tmp_fs.get(path.split('/').filter(it => it.length));
+        if (!file || (file && !file.isFile())) {
+            return false;
         }
-        if (typeof foundNode === 'undefined' || foundNode == null || foundNode.nodeName != 'f') {
-            // Not found in current directory, search globally:
-            selector = self.pathMgr.parseFilePathToSelector(path);
-            var foundNode = self.filesystem.querySelector(selector);
-            if (typeof foundNode === 'undefined' || foundNode == null || foundNode.nodeName != 'f') {
-                return false;
-            }
-        }
-
-        // We found a node! Output the file contents.
-        return foundNode.querySelector('contents').innerHTML;
+        return file.content;
     }
 
     self.changeDirectory = function (path) {
-        if (path == "..") {
-            // Go up one level as long as we aren't already at the filesystem root.
-            if (self.filesystemPointer.getAttribute('name') != "/") {
-                self.filesystemPointer = self.filesystemPointer.parentNode.parentNode; // Skip the children (c) element.
-                self.path = self.filesystemPointer.getAttribute('path');
-                path = self.path;
-                return true;
-            }
+        // if (!self.pathMgr.isValidDirectoryPath(path)) {
+        //     return false;
+        // }
+        if (path === '.') {
             return true;
         }
+        try {
+            const startDir = path.indexOf('/') === 0 ?
+                '/' :
+                self.tmp_fs.pwd();
+            const preparedPath = self.pathMgr.resolveToArray(startDir, path);
 
-        // We are looking for the current directory.
-        if (path == ".") {
-            return true;
-        }
-
-        if (!self.pathMgr.isValidDirectoryPath(path)) {
+            self.tmp_fs.cd(preparedPath);
+        } catch {
             return false;
         }
-
-        // Search for the directory.
-        var foundNode = self.findDirectory(path);
-        if (foundNode === false) {
-            return false;
-        }
-
-        // We found a node! Update the saved pointer and path.
-        self.path = foundNode.getAttribute('path');
-        if (self.path.substr(-1) != '/') self.path += '/'; // If there isn't a trailing slash, add one.
-        path = self.path;
-        self.filesystemPointer = foundNode;
+        self.path = self.tmp_fs.pwd();
 
         return true;
+
     };
 
     /**
@@ -392,9 +409,10 @@ var Terminal = (function () {
     };
 
 
-    self.init = function (elem, commands, customPrompt) {
+    self.init = function (elem, commands, customPrompt, initialFilesystem) {
         self.commands = commands;
         self.customPrompt = customPrompt;
+        self.tmp_fs = initialFilesystem;
 
         self.initSession();
 
@@ -482,7 +500,7 @@ var Terminal = (function () {
         self.history = (localStorage.getItem("history") ? localStorage.getItem("history").split(",") : []);
         self.historyIndex = self.history.length;
 
-        var fileSystemStr = (localStorage.getItem("filesystem") ? localStorage.getItem("filesystem") : originalFilesystem);
+        var fileSystemStr = (localStorage.getItem("filesystem") ? localStorage.getItem("filesystem") : originalFilesystemXML);
         self.filesystem = (new DOMParser).parseFromString(fileSystemStr, "text/xml");
 
         self.path = "/";
