@@ -43,15 +43,18 @@
     </div>
 
 
-    <script src="js/filesystem.js"></script>
-    <!-- <script src="js/bundle.min.js"></script> OUT OF DATE-->
+
+    <!-- <script src="js/bundle.min.js"></script> !!!!! OUT OF DATE !!!!! TODO: Get Babel working. -->
+
     <!-- The above minified bundle contains files in src/ directory: -->
+    <script src="js/src/filesystem-utilities.js"></script>
     <script src="js/src/cmd-utilities.js"></script>
+    <script src="js/src/crypto.js"></script>
     <script src="js/src/terminal.js"></script>
     <script src="js/src/boot.js"></script>
-    <script src="js/src/crypto.js"></script>
     <script src="js/src/system.js"></script>
 
+    <script src="js/filesystem.js"></script>
     <script src="js/commands.js"></script>
 
     <script>
@@ -64,7 +67,7 @@
         var customPrompt = function () { return "guest@TermFake ("+Terminal.path+") $ ";};
 
         // Initialize & show the terminal:
-        var term = Terminal.init(document.getElementById("terminal"), commands, customPrompt);
+        var term = Terminal.init(document.getElementById("terminal"), commands, customPrompt, initialFilesystem);
     </script>
 
 </body>

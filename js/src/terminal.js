@@ -3,7 +3,7 @@
  * A JavaScript Bash terminal simulation.
  */
 
-var version = '1.4.5';  // Used in various commands.
+var version = '1.4.6';  // Used in various commands.
 
 function Path() {
 
@@ -154,7 +154,7 @@ function Path() {
 
 var Terminal = (function () {
     var self = {};
-    self.tmp_fs = myFs;
+    self.tmp_fs;
     self.pathMgr = new Path();
 
     var KEY_UP = 38,
@@ -254,7 +254,7 @@ var Terminal = (function () {
         } else if ('outerHTML' in self.filesystem) {
             strFilesystem = self.filesystem.outerHTML;
         } else {
-            strFilesystem = originalFilesystem; // Saving doesn't work.
+            strFilesystem = originalFilesystemXML; // TODO: Saving doesn't work.
         }
         localStorage.setItem("filesystem", strFilesystem);
     }
@@ -409,9 +409,10 @@ var Terminal = (function () {
     };
 
 
-    self.init = function (elem, commands, customPrompt) {
+    self.init = function (elem, commands, customPrompt, initialFilesystem) {
         self.commands = commands;
         self.customPrompt = customPrompt;
+        self.tmp_fs = initialFilesystem;
 
         self.initSession();
 
@@ -499,7 +500,7 @@ var Terminal = (function () {
         self.history = (localStorage.getItem("history") ? localStorage.getItem("history").split(",") : []);
         self.historyIndex = self.history.length;
 
-        var fileSystemStr = (localStorage.getItem("filesystem") ? localStorage.getItem("filesystem") : originalFilesystem);
+        var fileSystemStr = (localStorage.getItem("filesystem") ? localStorage.getItem("filesystem") : originalFilesystemXML);
         self.filesystem = (new DOMParser).parseFromString(fileSystemStr, "text/xml");
 
         self.path = "/";
