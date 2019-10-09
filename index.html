@@ -42,11 +42,7 @@
         </p>
     </div>
 
-
-
-    <!-- <script src="js/bundle.min.js"></script> !!!!! OUT OF DATE !!!!! TODO: Get Babel working. -->
-
-    <!-- The above minified bundle contains files in src/ directory: -->
+    <!-- TODO: Minify and combine the following 'internal' files: -->
     <script src="js/src/filesystem-utilities.js"></script>
     <script src="js/src/cmd-utilities.js"></script>
     <script src="js/src/crypto.js"></script>
@@ -54,11 +50,12 @@
     <script src="js/src/boot.js"></script>
     <script src="js/src/system.js"></script>
 
+    <!-- Customizable files: -->
     <script src="js/filesystem.js"></script>
     <script src="js/commands.js"></script>
 
     <script>
-        // ** On-Page Configuration: **
+        // ** Terminal Configuration: **
 
         // Whether to use the longer boot load screen. If this is missing, defaults to true.
         var useBootLoader = true;

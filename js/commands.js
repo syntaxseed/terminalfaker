@@ -6,13 +6,31 @@
 
 var customCommands = {};
 
+
+/**
+ * Adds passed values.
+ **/
+customCommands.add = {
+    about: "add [value1] [value2]... [valueN]<br>&nbsp;&nbsp;Add specified values.",
+    exe: function (args) {
+        if (args.length < 2) {
+            return "Too few arguments.";
+        }
+        let values = args.slice(1);
+        let result = values.reduce((accumulator, current) => {
+            return Number(current) + Number(accumulator);
+        }, 0);
+        return result;
+    },
+};
+
 /**
  * Base64 encodes a string.
 */
-builtInCommands.base64enc = {
+customCommands.base64enc = {
     about: "base64enc [string]<br>&nbsp;&nbsp;Base64 encode a string.",
     exe: function (args) {
-        if(args.length == 1){
+        if (args.length == 1) {
             return "No string specified.";
         }
         args.shift();
@@ -23,10 +41,10 @@ builtInCommands.base64enc = {
 /**
  * Base64 decodes a string.
 */
-builtInCommands.base64dec = {
+customCommands.base64dec = {
     about: "base64dec [string]<br>&nbsp;&nbsp;Base64 decode a string.",
     exe: function (args) {
-        if(args.length == 1){
+        if (args.length == 1) {
             return "No string specified.";
         }
         args.shift();
@@ -38,9 +56,9 @@ builtInCommands.base64dec = {
  * Print a simple message.
  **/
 customCommands.cow = {
-    about:  "cow<br>&nbsp;&nbsp;What does a cow say?",     // Help text for this command.
-    exe:  function() {                                     // Executed for this command.
-            return "Moooooo!";
+    about: "cow<br>&nbsp;&nbsp;What does a cow say?",     // Help text for this command.
+    exe: function () {                                     // Executed for this command.
+        return "Moooooo!";
     }
 };
 
@@ -65,10 +83,10 @@ customCommands.hello = {
  * Print a simple message.
  **/
 customCommands.secret = {
-    about:  "secret<br>&nbsp;&nbsp;A command that is not listed in the help.",  // Help text for this command.
+    about: "secret<br>&nbsp;&nbsp;A command that is not listed in the help.",  // Help text for this command.
     hidden: true,                                                               // Whether to hide this command from the help list.
-    exe:  function() {                                                          // Executed for this command.
-            return "The password is: goldfish";
+    exe: function () {                                                          // Executed for this command.
+        return "The password is: goldfish";
     }
 };
 
