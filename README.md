@@ -161,6 +161,7 @@ See the [Contributing Guide](CONTRIBUTING.md). Pull requests are welcome. For ma
 * **Ben Brunton** - [benbrunton](https://github.com/benbrunton)
 * **Sahil Bondre** - [godcrampy](https://github.com/godcrampy)
 * **LapinoLapidus** - [LapinoLapidus](https://github.com/LapinoLapidus)
+* **Dzhamal Eziev** - [deziev](https://github.com/deziev)
 
 ## License
 

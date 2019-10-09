@@ -1,44 +1,61 @@
-/**
- * The initial state of the filesystem in XML format.
- * As users make changes the new filesystem is stored in local storage.
- * Reset to this initial state with the reboot command.
- */
+// TODO - Refactor the initial filesystem state to read from a JSON file and then do this conversion.
 
-var originalFilesystem="<d name='/' path='/'>\
-            <c>\
-            <d name='docs' path='/docs/'>\
-                <c>\
-                    <d name='private' path='/docs/private/'>\
-                        <c>\
-                            <f name='secret.txt' path='/docs/private/'>\
-                                <contents>PxNmGkl6M+jDP4AYAKZET18SEnWD5qw5LIP9174lONWslF144K9VHFIk1JA=</contents>\
-                            </f>\
-                        </c>\
-                    </d>\
-                    <f name='shoplist.txt' path='/docs/'>\
-                        <contents>-Apples\n-Bananas\n-Cookies</contents>\
-                    </f>\
-                    <f name='ok.txt' path='/docs/'>\
-                        <contents>I am ok.</contents>\
-                    </f>\
-                    <f name='moretodo.txt' path='/docs/'>\
-                        <contents>A, B, C.</contents>\
-                    </f>\
-                </c>\
-            </d>\
-            <d name='more' path='/more/'>\
-                <c>\
-                    <f name='moretodo.txt' path='/more/'>\
-                        <contents>Don't forget this other stuff.</contents>\
-                    </f>\
-                </c>\
-            </d>\
-            <d name='stuff' path='/stuff/'>\
-                <c>\
-                </c>\
-            </d>\
-            <f name='cool.txt' path='/'>\
-                <contents>There is a hidden command in this terminal called 'secret'.</contents>\
-            </f>\
-            </c>\
-        </d>";
+// Here we create initial file system structure. Changes are saved to LocalStorage.
+// System is reset to this on 'reboot' command.
+
+var initialFilesystem = new FileSystem();
+
+initialFilesystem
+  .add(new FsDir('.tmp-dir'), [])
+
+initialFilesystem
+  .add(new FsFile('.hidden', 'There is a hidden file.'), []);
+
+initialFilesystem
+  .add(new FsDir('docs'), [])
+
+initialFilesystem
+  .get(['docs'])
+  .add(new FsFile('moretodo.txt', 'A, B, C.'))
+
+initialFilesystem
+  .get(['docs'])
+  .add(new FsFile('ok.txt', 'I am ok.'))
+
+initialFilesystem
+  .get(['docs'])
+  .add(new FsFile(
+    'shoplist.txt',
+      `-Apples\n-Bananas\n-Cookies`
+      )
+    );
+
+initialFilesystem
+  .get(['docs'])
+  .add(new FsDir('private'))
+
+initialFilesystem
+  .get(['docs', 'private'])
+  .add(new FsFile('secret.txt', 'PxNmGkl6M+jDP4AYAKZET18SEnWD5qw5LIP9174lONWslF144K9VHFIk1JA='))
+
+initialFilesystem
+  .get(['docs', 'private'])
+  .add(new FsDir('opt'))
+
+initialFilesystem
+  .get(['docs'])
+  .add(new FsDir('tmp'))
+
+initialFilesystem
+  .add(new FsDir('more'), [])
+  .add(new FsFile('moretodo.txt', `Don't forget this other stuff.`))
+
+initialFilesystem
+  .add(new FsDir('stuff'), [])
+
+initialFilesystem
+  .add(new FsFile('cool.txt', 'There is a hidden command in this terminal called \'secret\'.'), []);
+
+
+// Creation of initial filesystem in xml:
+var originalFilesystemXML = fsToXML(initialFilesystem);
