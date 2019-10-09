@@ -527,9 +527,9 @@ var Terminal = (function () {
             };
 
             // Execute the sanitization, dispatching, and display
+            updateHistory(enteredComand);
             var sanitized = sanitizeInput(input);
             var commandOutput = dispatchToCommandRunner(sanitized);
-            updateHistory(enteredComand);
             displayStdout(elem, commandOutput);
 
 
