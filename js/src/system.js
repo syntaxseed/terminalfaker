@@ -5,11 +5,14 @@
 
 var builtInCommands = {};
 
+/**
+ * Display the contents of a file.
+ */
 builtInCommands.cat = {
     about: "cat [file]<br>&nbsp;&nbsp;Display the contents of the specified file.",
     exe: function (args) {
 
-        if(args.length != 2){
+        if (args.length != 2) {
             throw new CmdValidationError('cat', "No such file.");
         }
         const { listingUnit, path } = TerminalUtilities.getFsUnit(args);
@@ -28,16 +31,16 @@ builtInCommands.cat = {
 builtInCommands.cd = {
     about: "cd [path]<br>&nbsp;&nbsp;Change directory to the specified path.",
     exe: function (args) {
-        if(args.length != 2){
+        if (args.length != 2) {
             return "";
         }
         var result = term.changeDirectory(args[1]);
-        if(!result){
+        if (!result) {
             return "No such directory.";
         }
         return "";
     }
-}
+};
 
 /**
  * Clears the terminal using a special flag on the resetPrompt function.
@@ -45,7 +48,7 @@ builtInCommands.cd = {
 builtInCommands.clear = {
     about: "clear<br>&nbsp;&nbsp;Clear the terminal window.",
     exe: function () {
-        return "";    // Functionality is handled internally by watching for this specific command name when resetting the prompt.
+        return ""; // Functionality is handled internally by watching for this specific command name when resetting the prompt.
     }
 };
 
@@ -54,56 +57,68 @@ builtInCommands.clear = {
  **/
 builtInCommands.echo = {
     about: "echo [string]<br>&nbsp;&nbsp;Display a line of text.",
-    exe: function(args) {
+    exe: function (args) {
         var result = args.slice();
         result.shift();
         return result.join(" ");
-   }
+    }
 };
 
 /**
  * Encryption commands which use a password a string.
  **/
 builtInCommands.encrypt = {
-    about:  "encrypt [message] [password]<br>&nbsp;&nbsp;Encrypt a provided message using the password.",
-    exe:  function(args) {
-            if(args.length != 3){
-                return "encrypt: Invalid number of arguments.";
-            }
-            var result = Tea.encrypt(args[1], args[2]);
-            return result;
+    about:
+        "encrypt [message] [password]<br>&nbsp;&nbsp;Encrypt a provided message using the password.",
+    exe: function (args) {
+        if (args.length != 3) {
+            return "encrypt: Invalid number of arguments.";
+        }
+        var result = Tea.encrypt(args[1], args[2]);
+        return result;
     }
 };
 builtInCommands.decrypt = {
-    about:  "decrypt [encoded] [password]<br>&nbsp;&nbsp;Decrypt a provided message using the password.",
-    exe:  function(args) {
-            if(args.length != 3){
-                return "decrypt: Invalid number of arguments.";
-            }
-            var result = Tea.decrypt(args[1], args[2]);
-            return result;
+    about:
+        "decrypt [encoded] [password]<br>&nbsp;&nbsp;Decrypt a provided message using the password.",
+    exe: function (args) {
+        if (args.length != 3) {
+            return "decrypt: Invalid number of arguments.";
+        }
+        var result = Tea.decrypt(args[1], args[2]);
+        return result;
     }
 };
-
 
 /**
  * Lists all available commands or the help for a given command.
  **/
 builtInCommands.help = {
-    about: "help [command]<br>&nbsp;&nbsp;Show a list of available commands, or help for a specific command.",
+    about:
+        "help [command]<br>&nbsp;&nbsp;Show a list of available commands, or help for a specific command.",
     exe: function (args) {
         var output = "";
         if (args.length == 2 && args[1] && args[1].toLowerCase() in commands) {
-            output += "<strong>" + args[1].toLowerCase() + "</strong>: " + commands[args[1].toLowerCase()].about + "";
+            output +=
+                "<strong>" +
+                args[1].toLowerCase() +
+                "</strong>: " +
+                commands[args[1].toLowerCase()].about +
+                "";
         } else {
-            output += "TERMFAKE bash, version " + version + "-release (x86_64-pc-linux-gnu)<br>These shell commands are defined internally.  Type 'help' to see this list.<br>Type 'help name' to find out more about the function 'name'.<br><br>";
+            output +=
+                "TERMFAKE bash, version " +
+                version +
+                "-release (x86_64-pc-linux-gnu)<br>These shell commands are defined internally.  Type 'help' to see this list.<br>Type 'help name' to find out more about the function 'name'.<br><br>";
             output += "";
 
-            Object.keys(commands).sort().forEach(function (cName) {
-                if( !commands[cName].hidden ){
-                    output += "<strong>" + cName + "</strong>&nbsp; ";
-                }
-            });
+            Object.keys(commands)
+                .sort()
+                .forEach(function (cName) {
+                    if (!commands[cName].hidden) {
+                        output += "<strong>" + cName + "</strong>&nbsp; ";
+                    }
+                });
         }
         output += "<br><br>";
         return output;
@@ -111,7 +126,7 @@ builtInCommands.help = {
 };
 
 /**
- * Lists the recent builtInCommands.
+ * Lists the recent commands executed in the terminal.
  **/
 builtInCommands.history = {
     about: "history [-OPTIONS]<br>&nbsp;&nbsp;Display the list of recent commands.<br>&nbsp;&nbsp;-c clear the history list.",
@@ -137,32 +152,37 @@ builtInCommands.history = {
 builtInCommands.ls = {
     about: "ls [-OPTIONS]<br>&nbsp;&nbsp;List directory contents.<br>&nbsp;&nbsp;-l use a long listing format.<br>&nbsp;&nbsp;-a do not ignore entries starting with a period (.).",
     exe: (args) => {
-        // TOOD: Add to constant
         const supportedFlagsList = ['a', 'l'];
         const { listingUnit, path } = TerminalUtilities.getFsUnit(args);
+        let output = '';
+
         if (!listingUnit) {
             throw new CmdValidationError('ls', `${path}: No such file or directory`);
         }
-        const flagList = TerminalUtilities.parseFlags(args, supportedFlagsList)
+        const flagList = TerminalUtilities.parseFlags(args, supportedFlagsList);
 
         switch (listingUnit.type) {
             case FS_UNIT_TYPE.FILE:
-                return flagList.has('l') ?
-                    [TerminalUtilities.lsRenderFullLine(listingUnit)].join('<br>') :
-                    [TerminalUtilities.lsRenderOneLine(listingUnit)].join('<br>');
+                output = ( flagList.has('l') ?
+                    [TerminalUtilities.lsRenderFullLine(listingUnit)].join("\n") :
+                    [TerminalUtilities.lsRenderOneLine(listingUnit)].join('  ') );
+                break;
             case FS_UNIT_TYPE.DIR:
                 const dirContent = flagList.has('a') ?
                     listingUnit.content :
                     listingUnit.content.filter(it => it.name[0] !== '.');
 
-                return flagList.has('l') ?
-                    dirContent.map(fsUnit => TerminalUtilities.lsRenderFullLine(fsUnit)).join('<br>') :
-                    dirContent.map(fsUnit => TerminalUtilities.lsRenderOneLine(fsUnit)).join('&nbsp;&nbsp;');
+                output = ( flagList.has('l') ?
+                dirContent.map(fsUnit => TerminalUtilities.lsRenderFullLine(fsUnit)).join("\n") :
+                    dirContent.map(fsUnit => TerminalUtilities.lsRenderOneLine(fsUnit)).join('  ') );
+                break;
             default:
-                return ''
+                output = '';
         }
+        return '<pre>'+output+'</pre>';
     }
 }
+
 
 /**
  * Print the name of the current/working directory.
@@ -174,16 +194,18 @@ builtInCommands.pwd = {
     }
 }
 
+
 /**
  * Reset the local storage data for this app.
  **/
 builtInCommands.reboot = {
-    about: "reboot<br>&nbsp;&nbsp;Reboot the terminal and reset saved environment.",
+    about:
+        "reboot<br>&nbsp;&nbsp;Reboot the terminal and reset saved environment.",
     exe: function () {
         localStorage.removeItem("filesystem");
         localStorage.removeItem("history");
         term.initSession();
-        setTimeout(function() {
+        setTimeout(function () {
             // Delay terminal boot to wait for initializing session to complete.
             term.bootTerminalStart(document.getElementById("terminal"));
         }, 5);
@@ -193,15 +215,15 @@ builtInCommands.reboot = {
 
 /**
  * Delete a file with the given name.
- * TODO: Check if error messages are rigth
+ * TODO: Check if error messages are right.
  **/
 builtInCommands.rm = {
     about: "rm [name]<br>&nbsp;&nbsp;Delete the file with the specified name in the current directory.",
     exe: function (args) {
-        if(args.length == 1){
+        if (args.length == 1) {
             throw new CmdValidationError('rm', "No filename specified.");
         }
-        if(args.length > 2){
+        if (args.length > 2) {
             throw new CmdValidationError('rm', "Too many parameters supplied.");
         }
         const { listingUnit, path } = TerminalUtilities.getFsUnit(args);
@@ -221,11 +243,12 @@ builtInCommands.rm = {
 
         targetUnit
             .parentDir
-            .remove(targetUnit)
+            .remove(targetUnit);
 
         return "";
     }
 }
+
 
 /**
  * Create an empty file with the given name.
@@ -233,19 +256,19 @@ builtInCommands.rm = {
 builtInCommands.touch = {
     about: "touch [name]<br>&nbsp;&nbsp;Create a file with the specified name in the current directory.",
     exe: function (args) {
-        if(args.length == 1){
+        if (args.length == 1) {
             throw new CmdValidationError('touch', "No filename specified.");
         }
 
-        if(args.length > 2){
+        if (args.length > 2) {
             throw new CmdValidationError('touch', "Too many parameters supplied.");
         }
 
         const { listingUnit, path } = TerminalUtilities.getFsUnit(args);
-        
+
         const preparedPath = TerminalUtilities.createFullPath(path);
         const newFileName = preparedPath.pop();
-        
+
         if (!term.pathMgr.isValidFilename(newFileName)) {
             throw new CmdValidationError('touch', `${path}: Invalid file name.`);
         }
@@ -264,12 +287,18 @@ builtInCommands.touch = {
     }
 }
 
+
 /**
  * Get the version, author and repo information for Terminal Faker.
  */
 builtInCommands.version = {
-    about: "version<br>&nbsp;&nbsp;Display the version and attribution of this terminal application.",
+    about:
+        "version<br>&nbsp;&nbsp;Display the version and attribution of this terminal application.",
     exe: function () {
-        return "Terminal Faker: version " + version + " (https://github.com/syntaxseed/terminalfaker) by Sherri Wheeler.";
+        return (
+            "Terminal Faker: version " +
+            version +
+            " (https://github.com/syntaxseed/terminalfaker) by Sherri Wheeler."
+        );
     }
 };
