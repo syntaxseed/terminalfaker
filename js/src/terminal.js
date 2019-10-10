@@ -3,7 +3,7 @@
  * A JavaScript Bash terminal simulation.
  */
 
-var version = '1.5.2';  // Used in various commands.
+var version = '1.5.3';  // Used in various commands.
 
 function Path() {
 
@@ -418,6 +418,9 @@ var Terminal = (function () {
 
         self.initSession();
 
+        /**
+         * When the user presses tab, try to autocomplete the command.
+         */
         elem.addEventListener("keydown", function (event) {
             if (event.keyCode == KEY_TAB) {
                 var prompt = event.target;
@@ -438,11 +441,17 @@ var Terminal = (function () {
             }
         });
 
+        /**
+         * When the user types, check if we are browsing the history (up or down key pressed).
+         */
         elem.addEventListener("keyup", function (event) {
             if (self.historyIndex < 0) return;
             browseHistory(event.target, event.keyCode);
         });
 
+        /**
+         * When enter is pressed, execute the command.
+         */
         elem.addEventListener("keypress", function (event) {
             var prompt = event.target;
             if (event.keyCode != KEY_ENTER) return false;
@@ -536,6 +545,19 @@ var Terminal = (function () {
             // Reset the prompt, and the given array of command also clear the screen.
             resetPrompt(elem, prompt, (['clear', 'reboot'].indexOf(input[0].toLowerCase()) >= 0));
             event.preventDefault();
+        });
+
+        /**
+         * Help with re-focusing the contenteditable input line when the terminal div is clicked.
+         */
+        elem.addEventListener("mouseup", () => {
+            if (typeof window.getSelection != "undefined") {
+                var text = window.getSelection().toString();
+                if (text == ''){
+                    // If the user is not highlighting text, focus our input.
+                    document.querySelector("#terminal p:last-child span:last-child").focus();
+                }
+            }
         });
 
         elem.querySelector(".prompt").innerHTML = self.customPrompt();
