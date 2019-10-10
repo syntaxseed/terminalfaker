@@ -89,7 +89,8 @@
     </script>
     <script>
       // Add event listener to focus on input
-      document.addEventListener("click", () => {
+      let theTerminal = document.getElementById("terminal");
+      theTerminal.addEventListener("click", () => {
         document
           .querySelector("#terminal p:last-child span:last-child")
           .focus();
