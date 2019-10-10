@@ -41,41 +41,10 @@
            <span contenteditable="true" class="input" autocorrect="off" autocapitalize="none" autocomplete="off"> </span>
         </p>
     </div>
-
-
-
-    <!-- <script src="js/bundle.min.js"></script> !!!!! OUT OF DATE !!!!! TODO: Get Babel working. -->
+    <!-- Global variables -->
     <script src="filesystem.js"></script>
     <script src="customCommands.js"></script>
+    <!-- Minified build -->
     <script src="bundle.min.js"></script>
-    <!-- The above minified bundle contains files in src/ directory: -->
-    <!-- <script src="js/src/filesystem-utilities.js"></script>
-    <script src="js/src/cmd-utilities.js"></script>
-    <script src="js/src/crypto.js"></script>
-    <script src="js/src/terminal.js"></script>
-    <script src="js/src/boot.js"></script>
-    <script src="js/src/system.js"></script>
-
-    <script src="js/filesystem.js"></script>
-    <script src="js/commands.js"></script> -->
-<!-- 
-    <script>
-        // ** On-Page Configuration: **
-
-        // Whether to use the longer boot load screen. If this is missing, defaults to true.
-        termFaker.options.useBootLoader = true;
-
-        // Set the command prompt style:
-        const customPrompt = () => { return "guest@TermFake ("+termFaker.path+") $ ";};
-
-        // Initialize & show the terminal:
-        const term = termFaker.init(
-            document.getElementById("terminal"), 
-            new CustomTerminalCommands(), 
-            customPrompt, 
-            initialFilesystem
-        );
-    </script> -->
-
 </body>
 </html>
