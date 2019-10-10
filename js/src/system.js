@@ -54,13 +54,61 @@ builtInCommands.clear = {
 
 /**
  * Echos text to the terminal
+ * Can redirect output to a file with > or >>.
+ * @TODO Support creating directories if full path doesn't exist.
  **/
 builtInCommands.echo = {
-    about: "echo [string]<br>&nbsp;&nbsp;Display a line of text.",
+    about: "echo [string] [redirect] [file]<br>&nbsp;&nbsp;Display a line of text.<br>&nbsp;&nbsp;Optional: specify a redirect operator (> to overwrite or >> to append) to send the output to a [file].",
     exe: function (args) {
-        var result = args.slice();
-        result.shift();
-        return result.join(" ");
+        var redirectArgPos = args.findIndex(function(arg){return (arg == '>' || arg == '>>');});
+        var redirectArgs = []; // Portion of the arguments array that referrs to a redirect of output.
+        if( redirectArgPos >= 0){
+            redirectArgs = args.slice(redirectArgPos);
+            args = args.slice(0, redirectArgPos); // Chop off the redirect portion.
+        }
+
+        args.shift();
+        var output = args.join(" ");
+        output = output.replace('\\n', `\n`);
+
+        if( redirectArgPos >= 0){
+            const redirectType = redirectArgs[0];
+            const { listingUnit, path } = TerminalUtilities.getFsUnit(redirectArgs);
+
+            if (!listingUnit) {
+                // File does not exist. Try to create it!
+                const preparedPath = TerminalUtilities.createFullPath(path);
+                const newFileName = preparedPath.pop();
+
+                if (!term.pathMgr.isValidFilename(newFileName)) {
+                    throw new CmdValidationError('echo', `${path}: Invalid file name.`);
+                }
+
+                var createdFile = term.tmp_fs
+                    .get(preparedPath)
+                    .add(new FsFile(newFileName, output));
+
+                if(!createdFile || (createdFile.type != FS_UNIT_TYPE.FILE)){
+                    throw new CmdValidationError('echo', `${path}: Cannot create file.`);
+                }
+
+                return '';
+            }
+
+            // Send the output to the file.
+            if(listingUnit.type != FS_UNIT_TYPE.FILE){
+                throw new CmdValidationError('echo', `Invalid file name.`);
+            }
+
+            if( redirectType == '>>'){
+                listingUnit.append(output);
+            }else{
+                listingUnit.update(output);
+            }
+            return '';
+        }
+
+        return output.replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1' + '<br>' + '$2');
     }
 };
 
@@ -215,7 +263,7 @@ builtInCommands.reboot = {
 
 /**
  * Delete a file with the given name.
- * TODO: Check if error messages are right.
+ * @TODO Check if error messages are right.
  **/
 builtInCommands.rm = {
     about: "rm [name]<br>&nbsp;&nbsp;Delete the file with the specified name in the current directory.",
@@ -252,6 +300,7 @@ builtInCommands.rm = {
 
 /**
  * Create an empty file with the given name.
+ * @TODO Support creating directories if given path doesn't exist.
  **/
 builtInCommands.touch = {
     about: "touch [name]<br>&nbsp;&nbsp;Create a file with the specified name in the current directory.",

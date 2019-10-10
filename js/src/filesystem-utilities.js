@@ -113,7 +113,18 @@ class FsFile extends FsUnit {
     }
 
     /**
-     * Check is content is string
+     * Append to file content. Recalculate size.
+     *
+     * @param {String} content
+     */
+    append(content) {
+        this._checkContent(content);
+        this._content = this._content + content;
+        this._setSize(this._content);
+    }
+
+    /**
+     * Check is content a string
      *
      * @param {String} content
      */
