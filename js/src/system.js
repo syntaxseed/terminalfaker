@@ -154,6 +154,8 @@ builtInCommands.ls = {
     exe: (args) => {
         const supportedFlagsList = ['a', 'l'];
         const { listingUnit, path } = TerminalUtilities.getFsUnit(args);
+        let output = '';
+
         if (!listingUnit) {
             throw new CmdValidationError('ls', `${path}: No such file or directory`);
         }
@@ -161,20 +163,23 @@ builtInCommands.ls = {
 
         switch (listingUnit.type) {
             case FS_UNIT_TYPE.FILE:
-                return flagList.has('l') ?
-                    [TerminalUtilities.lsRenderFullLine(listingUnit)].join('<br>') :
-                    [TerminalUtilities.lsRenderOneLine(listingUnit)].join('<br>');
+                output = ( flagList.has('l') ?
+                    [TerminalUtilities.lsRenderFullLine(listingUnit)].join("\n") :
+                    [TerminalUtilities.lsRenderOneLine(listingUnit)].join('  ') );
+                break;
             case FS_UNIT_TYPE.DIR:
                 const dirContent = flagList.has('a') ?
                     listingUnit.content :
                     listingUnit.content.filter(it => it.name[0] !== '.');
 
-                return flagList.has('l') ?
-                    dirContent.map(fsUnit => TerminalUtilities.lsRenderFullLine(fsUnit)).join('<br>') :
-                    dirContent.map(fsUnit => TerminalUtilities.lsRenderOneLine(fsUnit)).join('&nbsp;&nbsp;');
+                output = ( flagList.has('l') ?
+                dirContent.map(fsUnit => TerminalUtilities.lsRenderFullLine(fsUnit)).join("\n") :
+                    dirContent.map(fsUnit => TerminalUtilities.lsRenderOneLine(fsUnit)).join('  ') );
+                break;
             default:
-                return '';
+                output = '';
         }
+        return '<pre>'+output+'</pre>';
     }
 }
 
