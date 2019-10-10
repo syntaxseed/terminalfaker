@@ -11,7 +11,7 @@ Terminal Faker
             alt="follow on Twitter"></a>
 </div>
 
-![Logo](favicon.png)
+![Logo](src/favicon.png)
 
 An extensible pseudo-terminal in Javascript.
 
