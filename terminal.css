@@ -16,6 +16,12 @@ the font size as it's quite small.
     height:      100%;
 }
 
+#terminal pre{
+    font-family: 'Courier New', monospace;
+    margin :0;
+    white-space: pre-wrap;
+}
+
 /**
 * The input span where the input happens.
 * Also applied to the previous inputs made in the current session.

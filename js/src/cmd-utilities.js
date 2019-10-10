@@ -3,7 +3,7 @@ class TerminalUtilities {
    * Function parsing path for commands like: cmd [flags] [path]
    * Parse absolute and relative paths. If relative - takes current dir
    * and resolves with '..' notation
-   * 
+   *
    * @param {String[]} args Args in format ['cmd', 'flag1', 'flag2', 'path']
    * @returns {Object} root
    * @returns {FsUnit} [root.listingUnit] Dir or File
@@ -11,7 +11,7 @@ class TerminalUtilities {
    */
   static getFsUnit(args) {
     let listingUnit = term.tmp_fs.pointer;
-    const path = args.slice(1).filter(it => it.indexOf('-') !== 0)[0] || '.'; 
+    const path = args.slice(1).filter(it => it.indexOf('-') !== 0)[0] || '.';
     if (args.length > 1) {
         if (path !== '.') {
             const preparedPath = TerminalUtilities.createFullPath(path);
@@ -32,13 +32,13 @@ class TerminalUtilities {
   /**
    * Create absolute path from passed param. Param could be
    * relative or absolute path
-   * 
+   *
    * @param {String} path Path to filesistem unit in unix format
    * @returns {String[]}
    */
   static createFullPath(pathToUnit) {
-    const startDir = pathToUnit.indexOf('/') === 0 ? 
-      '/' : 
+    const startDir = pathToUnit.indexOf('/') === 0 ?
+      '/' :
       term.tmp_fs.pwd();
     return term.pathMgr.resolveToArray(startDir, pathToUnit);
   }
@@ -46,8 +46,8 @@ class TerminalUtilities {
  /**
   * Take every element from arg array with dash '-',
   * remove duplicates and invalid flags
-  * 
-  * @param {String[]} args In format ['ls', '-la', '/'] 
+  *
+  * @param {String[]} args In format ['ls', '-la', '/']
   * @param {String[]} supportedFlagsList Such as ['a', 'l]
   * @returns {Set}
   */
@@ -65,7 +65,7 @@ class TerminalUtilities {
 
  /**
   * Format date to DD MMM HH:mm
-  * 
+  *
   * @param {Date} date Js Date type
   * @returns {String}
   */
@@ -82,24 +82,25 @@ class TerminalUtilities {
 
  /**
   * Render for ls -l flag
-  * 
+  *
   * @param {FsUnit} fsUnit File, Dir or Link
   * @returns {String}
   */
   static lsRenderFullLine(fsUnit) {
     const unitType = fsUnit.isFile() ? '-' : 'd';
-    return `<span>${unitType}rw-r--r--</span>&nbsp;&nbsp;` +
-        `<span>11</span>&nbsp;&nbsp;` +
-        `<span>guest</span>&nbsp;&nbsp;` +
-        `<span>guest</span>&nbsp;&nbsp;` +
-        `<span>${fsUnit.size}</span>&nbsp;&nbsp;` +
-        `<span>${TerminalUtilities.formatDate(new Date(fsUnit.lastMod))}</span>&nbsp;&nbsp;` +
+    var size = (fsUnit.size+'').padStart(6, ' ');
+    return `<span>${unitType}rw-r--r--</span>  ` +
+        `<span>11</span>  ` +
+        `<span>guest</span>  ` +
+        `<span>guest</span>  ` +
+        `<span>${size}</span>  ` +
+        `<span>${TerminalUtilities.formatDate(new Date(fsUnit.lastMod))}</span>  ` +
         `<span class='filesystem-${fsUnit.type}'>${fsUnit.name}</span>`;
   }
 
  /**
   * Render for default ls
-  * 
+  *
   * @param {FsUnit} fsUnit File, Dir or Link
   * @returns {String}
   */
@@ -111,7 +112,7 @@ class TerminalUtilities {
 
 class CmdValidationError extends Error {
   /**
-   * @param {String} cmd Command name 
+   * @param {String} cmd Command name
    * @param {String} msg Error msg
    */
   constructor(cmd, msg) {

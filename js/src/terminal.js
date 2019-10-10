@@ -3,7 +3,7 @@
  * A JavaScript Bash terminal simulation.
  */
 
-var version = '1.4.5';  // Used in various commands.
+var version = '1.5.2';  // Used in various commands.
 
 function Path() {
 
@@ -15,7 +15,7 @@ function Path() {
      * @param {String} path2 Unix-like path. Absolute or relative
      * @returns {String[]}
      */
-    Path.prototype.resolveToArray = function(path1, path2) {
+    Path.prototype.resolveToArray = function (path1, path2) {
         const goingBackwardsSymb = '..';
         const mainPath = path1.split('/').filter(it => it.length);
         const foreignPath = path2.split('/').filter(it => it.length);
@@ -163,8 +163,6 @@ var Terminal = (function () {
         KEY_ENTER = 13,
         MAX_HISTORY = 20;
 
-    //var path ="/";
-
     // Auxiliary functions
 
     var resetPrompt = function (terminal, prompt, clear) {
@@ -200,11 +198,10 @@ var Terminal = (function () {
             }
         }
         return cmdRunResult
-      };
-      
-    var displayStdout = function(terminal, cmdRunResult) {
-      terminal.innerHTML += `<div>${cmdRunResult}</div>`;
-      updateHistory(prompt.textContent);
+    };
+
+    var displayStdout = function (terminal, cmdRunResult) {
+        terminal.innerHTML += `<div>${cmdRunResult}</div>`;
     };
 
     var updateHistory = function (cmd) {
@@ -470,69 +467,71 @@ var Terminal = (function () {
                 }
             });
 
-      /**
-       * If commands are piped, process array > string > array
-       * Return an array of arrays (even on single command)
-       */
-      var sanitizeInput = function(input) {
-        if (input.indexOf("|") !== -1) {
-          let splitArray = splitArrayOnPipe(input);
-          let argumentArray = makeArgumentArray(splitArray);
-          let filteredArray = filterEmptyArgs(argumentArray);
-          return (sanitizedInput = filteredArray);
-        } else {
-          return (sanitizedInput = [input]);
-        }
-      };
-      // Rejoin array, split on pipes
-      var splitArrayOnPipe = function(array) {
-        let joinedInput = array.join(" ");
-        let pipeSplit = joinedInput.split("|");
-        let inputStrings = pipeSplit.map(item => item.trim());
-        return inputStrings;
-      };
-      var makeArgumentArray = function(commandArray) {
-        let argumentArray = commandArray.map(item => {
-          if (item.indexOf(" ") === -1) {
-            return [item];
-          } else {
-            return item.split(" ");
-          }
-        });
-        return argumentArray;
-      };
-      // Accounts for trailing or leading pipes
-      var filterEmptyArgs = function(commandArray) {
-        return (sanitizedInput = commandArray.filter(
-          item => item.length >= 1 && item[0].length > 0
-        ));
-      };
+            /**
+             * If commands are piped, process array > string > array
+             * Return an array of arrays (even on single command)
+             */
+            var sanitizeInput = function (input) {
+                if (input.indexOf("|") !== -1) {
+                    let splitArray = splitArrayOnPipe(input);
+                    let argumentArray = makeArgumentArray(splitArray);
+                    let filteredArray = filterEmptyArgs(argumentArray);
+                    return (sanitizedInput = filteredArray);
+                } else {
+                    return (sanitizedInput = [input]);
+                }
+            };
+            // Rejoin array, split on pipes
+            var splitArrayOnPipe = function (array) {
+                let joinedInput = array.join(" ");
+                let pipeSplit = joinedInput.split("|");
+                let inputStrings = pipeSplit.map(item => item.trim());
+                return inputStrings;
+            };
+            var makeArgumentArray = function (commandArray) {
+                let argumentArray = commandArray.map(item => {
+                    if (item.indexOf(" ") === -1) {
+                        return [item];
+                    } else {
+                        return item.split(" ");
+                    }
+                });
+                return argumentArray;
+            };
+            // Accounts for trailing or leading pipes
+            var filterEmptyArgs = function (commandArray) {
+                return (sanitizedInput = commandArray.filter(
+                    item => item.length >= 1 && item[0].length > 0
+                ));
+            };
 
-      /**
-       * Expect an array of arrays
-       * Send command array one at a time via .reduce to the commandRunner
-       * Accumulates the 'stdout' and appends to the next command array as final argument
-       */
-      var dispathToCommandRunner = function(theSanitizedInput) {
-        let stdout = theSanitizedInput.reduce((accumulator, current) => {
-          let output = current.concat(accumulator);
-          return commandRunner(output);
-        }, []);
-        return stdout;
-      };
+            /**
+             * Expect an array of arrays
+             * Send command array one at a time via .reduce to the commandRunner
+             * Accumulates the 'stdout' and appends to the next command array as final argument
+             */
+            var dispatchToCommandRunner = function (theSanitizedInput) {
+                let stdout = theSanitizedInput.reduce((accumulator, current) => {
+                    let output = current.concat(accumulator);
+                    return commandRunner(output);
+                }, []);
+                return stdout;
+            };
 
-      var commandRunner = function(commandArray) {
-        if (commandArray[0].toLowerCase() in self.commands) {
-          return runCommand(commandArray[0].toLowerCase(), commandArray);
-        } else {
-          elem.innerHTML += commandArray[0] + ": command not found";
-        }
-      };
+            var commandRunner = function (commandArray) {
+                if (commandArray[0].toLowerCase() in self.commands) {
+                    return runCommand(commandArray[0].toLowerCase(), commandArray);
+                } else {
+                    elem.innerHTML += commandArray[0] + ": command not found";
+                }
+            };
 
-      // Execute the sanitization, dispatching, and display
-      var sanitized = sanitizeInput(input);
-      var stdout = dispathToCommandRunner(sanitized);
-      displayStdout(elem, stdout);
+            // Execute the sanitization, dispatching, and display
+            updateHistory(enteredComand);
+            var sanitized = sanitizeInput(input);
+            var commandOutput = dispatchToCommandRunner(sanitized);
+            displayStdout(elem, commandOutput);
+
 
             // Reset the prompt, and the given array of command also clear the screen.
             resetPrompt(elem, prompt, (['clear', 'reboot'].indexOf(input[0].toLowerCase()) >= 0));
