@@ -16,6 +16,7 @@ Terminal Faker
 An extensible pseudo-terminal in Javascript.
 
 # What's this?
+
 A pure native Javascript, mobile-friendly, Linux-like terminal simulation for use in a browser. There is a **[live demo here](https://syntaxseed.github.io/terminalfaker/)**.
 
 Originally forked from [AVGP/terminal.js](https://github.com/AVGP/terminal.js).
@@ -32,7 +33,7 @@ You can do a bunch of things with it:
 
 The easiest way to get started is to use the included "index.html" file and modify it for your needs. The basic usage is:
 
-1. Include the "terminal.css" and the "bundle.min.js" & "filesystem.js" files.
+1. Include the "terminal.css" and the javascript files.
 2. Have a container element (e.g. a div) with a child element holding a contenteditable element of class "input" and another span of class "prompt" with the actual prompt line you want to display.
 3. Create an object with methods that will be your commands (see below for the details of how this works).
 4. Call terminal.init and pass the container element, your commands object, and a callback which creates the custom prompt. - **Ready to roll!**
@@ -48,7 +49,13 @@ Here's a **minimal** example with one command:
         </p>
     </div>
 
-    <script src="js/bundle.min.js"></script>
+    <script src="js/src/filesystem-utilities.js"></script>
+    <script src="js/src/cmd-utilities.js"></script>
+    <script src="js/src/crypto.js"></script>
+    <script src="js/src/terminal.js"></script>
+    <script src="js/src/boot.js"></script>
+    <script src="js/src/system.js"></script>
+
     <script src="js/filesystem.js"></script>
 
     <script>
@@ -56,7 +63,7 @@ Here's a **minimal** example with one command:
     commands.cow = {
             about:  "What does the cow say?",
             exe:  function() {
-            return "Moooooo!";
+                return "Moooooo!";
             }
     };
 
@@ -64,7 +71,7 @@ Here's a **minimal** example with one command:
     var customPrompt = function () { return "guest@TerminalFaker $ ";};
 
     // Initialize the terminal:
-    var term = Terminal.init(document.getElementById("terminal"), commands, customPrompt);
+    var term = Terminal.init(document.getElementById("terminal"), commands, customPrompt, initialFilesystem);
     </script>
 ```
 
@@ -77,7 +84,6 @@ First we modify our minimal example to load in custom commands found in "js/comm
 
 ```html
   ...
-  <script src="js/bundle.min.js"></script>
   <script src="js/filesystem.js"></script>
   <script src="js/commands.js"></script>
   ...
@@ -86,6 +92,7 @@ First we modify our minimal example to load in custom commands found in "js/comm
 Then, in commands.js we will define custom commands (there are a couple examples in there already for you).
 
 ### A greeting command
+
 So let's build a command that greets the user with the name she enters, like this:
 
 ```bash
@@ -104,13 +111,12 @@ In this case, hello will take multiple arguments (separated by spaces), which wi
 ```javascript
 var customCommands = {};
 customCommands.hello = {
-    about: "hello [arg ...]<br>&nbsp;&nbsp;Greet the user with a message.",
+    about: "hello [name ...]<br>&nbsp;&nbsp;Greet the user with a message.",
     exe: function (args) {                          // Executed for this command. args[0] contains the command name.
         if (args.length < 2) {
             return "Hello. Why don't you tell me your name?";
         }
         var name = "";
-        // Concatenate all remaining arguments as the 'name'.
         for (var i = 1; i < args.length; i++) {
             name += args[i] + " ";
         }
@@ -141,7 +147,7 @@ A simulated filesystem is initialized from the default content found in js/files
 
 ![Screenshot](media/screenshot1.png)
 
-To see a full example including loading in system commands and the nicer boot message text, see the source of index.html.
+To see a full example including loading in system commands and the nicer boot message text, see the source of `index.html`.
 
 ## ToDo
 
@@ -149,7 +155,8 @@ To see a full example including loading in system commands and the nicer boot me
 * Editing of files, mkdir, rmdir, etc.
 
 ## Contributing
-See the [Contributing Guide](CONTRIBUTING.md). Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
+See the [Contributing Guide](CONTRIBUTING.md). Pull requests for existing issues are welcome. For other or major changes, please open an issue first to discuss what you would like to change.
 
 ## Authors
 
@@ -162,6 +169,7 @@ See the [Contributing Guide](CONTRIBUTING.md). Pull requests are welcome. For ma
 * **Sahil Bondre** - [godcrampy](https://github.com/godcrampy)
 * **LapinoLapidus** - [LapinoLapidus](https://github.com/LapinoLapidus)
 * **Dzhamal Eziev** - [deziev](https://github.com/deziev)
+* **Jacob Shu** - [jacob-shu](https://github.com/jacob-shu)
 
 ## License
 

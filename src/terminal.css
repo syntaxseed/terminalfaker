@@ -12,8 +12,15 @@ the font size as it's quite small.
 */
 #terminal {
     font-family: 'Courier New', monospace;
-    width:       100%;
-    height:      100%;
+    width: 100%;
+    height: 100%;
+    padding-bottom:50px;
+}
+
+#terminal pre{
+    font-family: 'Courier New', monospace;
+    margin :0;
+    white-space: pre-wrap;
 }
 
 /**
