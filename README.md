@@ -84,8 +84,8 @@ First we modify our minimal example to load in custom commands found in "js/comm
 
 ```html
   ...
-  <script src="js/filesystem.js"></script>
-  <script src="js/commands.js"></script>
+    <script src="js/filesystem.js"></script>
+    <script src="js/customCommands.js"></script>
   ...
 ```
 
@@ -157,6 +157,18 @@ To see a full example including loading in system commands and the nicer boot me
 ## Contributing
 
 See the [Contributing Guide](CONTRIBUTING.md). Pull requests for existing issues are welcome. For other or major changes, please open an issue first to discuss what you would like to change.
+
+### For developer
+
+```
+    npm install
+    npm run build
+```
+
+To start `webpack` in watch mode run:
+```
+    npm run build-dev
+```
 
 ## Authors
 
