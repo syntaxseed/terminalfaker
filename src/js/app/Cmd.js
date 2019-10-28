@@ -12,8 +12,8 @@ export class TerminalCommands {
   /**
    * Built-in System Commands
    * Modelled after Linux Bash commands.
-   * 
-   * @param {Terminal} terminal 
+   *
+   * @param {Terminal} terminal
    */
   constructor(terminal) {
     this.terminal = terminal;
@@ -119,13 +119,13 @@ export class TerminalCommands {
     return {
       about: "help [command]<br>&nbsp;&nbsp;Show a list of available commands, or help for a specific command.",
       exe: (args) => {
-        var output = "";      
-        if (args.length == 2 && args[1] && args[1].toLowerCase() in this) {          
+        var output = "";
+        if (args.length == 2 && args[1] && args[1].toLowerCase() in this) {
           output += "<strong>" + args[1].toLowerCase() + "</strong>: " + this[args[1].toLowerCase()].about + "";
         } else {
           output += "TERMFAKE bash, version " + version + "-release (x86_64-pc-linux-gnu)<br>These shell commands are defined internally.  Type 'help' to see this list.<br>Type 'help name' to find out more about the function 'name'.<br><br>";
           output += "";
-  
+
           getAllMethodNames(this).sort().forEach((cName) => {
             if(this[cName].about && !this[cName].hidden) {
               output += "<strong>" + cName + "</strong>&nbsp; ";
@@ -166,31 +166,37 @@ export class TerminalCommands {
   get ls() {
     return {
       about: "ls [-OPTIONS]<br>&nbsp;&nbsp;List directory contents.<br>&nbsp;&nbsp;-l use a long listing format.<br>&nbsp;&nbsp;-a do not ignore entries starting with a period (.).",
-      exe: (args) => {        
+      exe: (args) => {
         // TOOD: Add to constant
         const supportedFlagsList = ['a', 'l'];
         const { listingUnit, path } = this.terminal.getFsUnit(args);
         if (!listingUnit) {
           throw new CmdValidationError('ls', `${path}: No such file or directory`);
         }
-        const flagList = CmdHelper.parseFlags(args, supportedFlagsList)
-  
+        const flagList = CmdHelper.parseFlags(args, supportedFlagsList);
+        let output = '';
+
         switch (listingUnit.type) {
           case FS_UNIT_TYPE.FILE:
-            return flagList.has('l') ?
-              [CmdHelper.lsRenderFullLine(listingUnit)].join('<br>') :
-              [CmdHelper.lsRenderOneLine(listingUnit)].join('<br>');
+            output = flagList.has('l') ?
+              [CmdHelper.lsRenderFullLine(listingUnit)].join('\n') :
+              [CmdHelper.lsRenderOneLine(listingUnit)].join('  ');
+            break;
+
           case FS_UNIT_TYPE.DIR:
             const dirContent = flagList.has('a') ?
               listingUnit.content :
               listingUnit.content.filter(it => it.name[0] !== '.');
-  
-            return flagList.has('l') ?
-              dirContent.map(fsUnit => CmdHelper.lsRenderFullLine(fsUnit)).join('<br>') :
-              dirContent.map(fsUnit => CmdHelper.lsRenderOneLine(fsUnit)).join('&nbsp;&nbsp;');
+
+            output = flagList.has('l') ?
+              dirContent.map(fsUnit => CmdHelper.lsRenderFullLine(fsUnit)).join('\n') :
+              dirContent.map(fsUnit => CmdHelper.lsRenderOneLine(fsUnit)).join('  ');
+            break;
+
           default:
-                return ''
+            output = '';
         }
+        return '<pre>'+output+'</pre>';
       }
     };
   }
@@ -270,7 +276,7 @@ export class TerminalCommands {
   get touch() {
     return {
       about: "touch [name]<br>&nbsp;&nbsp;Create a file with the specified name in the current directory.",
-      exe: (args) => {  
+      exe: (args) => {
         if(args.length == 1){
           throw new CmdValidationError('touch', "No filename specified.");
         }
@@ -280,10 +286,10 @@ export class TerminalCommands {
         }
 
         const { listingUnit, path } = this.terminal.getFsUnit(args);
-        
+
         const preparedPath = this.terminal.createFullPath(path);
         const newFileName = preparedPath.pop();
-                
+
         if (!PathHelper.isValidFilename(newFileName)) {
           throw new CmdValidationError('touch', `${path}: Invalid file name.`);
         }
@@ -293,7 +299,7 @@ export class TerminalCommands {
         if (listingUnit && listingUnit.isFile()) {
           throw new CmdValidationError('touch', `${path}: File already exists.`);
         }
-        
+
         this.terminal.fs
           .get(preparedPath)
           .add(new FsFile(newFileName, ""));
