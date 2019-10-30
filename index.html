@@ -61,7 +61,7 @@
         var useBootLoader = true;
 
         // Set the command prompt style:
-        var customPrompt = function () { return "guest@TermFake ("+Terminal.path+") $ ";};
+        var customPrompt = function () { return "guest@TermFake:~"+Terminal.path+"$ ";};
 
         // Initialize & show the terminal:
         var term = Terminal.init(document.getElementById("terminal"), commands, customPrompt, initialFilesystem);
