@@ -204,6 +204,16 @@ export class Terminal {
     // need to get all files in the current directory, 
     // and then if any of them match the last element of inputArray
     suggestions = [];
+    const { listingUnit } = TerminalUtilities.getFsUnit(["ls"])
+    const names = listingUnit.content.map((element) => {
+      return element.name
+    })
+    const re = new RegExp("^" + inputArray[1], "ig")
+    for (let name of names) {
+      if (name.match(re)) {
+        suggestions.push([inputArray[0], name].join(" "))
+      }
+    }
     return suggestions;
   }
 
