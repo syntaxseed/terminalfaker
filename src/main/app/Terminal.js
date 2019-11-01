@@ -183,7 +183,7 @@ export class Terminal {
     } else if (inputArray.length == 1) {
       return autoCompleteCommands(input.replace(/\s+/g, ""))
     } else {
-      // don't do anything for now
+      return [];
     }
   }
 
@@ -200,9 +200,6 @@ export class Terminal {
   }
 
   autoCompleteFiles(inputArray) {
-    // first I'll make it work with one match
-    // need to get all files in the current directory, 
-    // and then if any of them match the last element of inputArray
     suggestions = [];
     const { listingUnit } = TerminalUtilities.getFsUnit(["ls"])
     const names = listingUnit.content.map((element) => {
