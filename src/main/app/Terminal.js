@@ -177,14 +177,33 @@ export class Terminal {
   }
 
   autoCompleteInput(input) {
-    var cmds = this.commands,
-        re = new RegExp("^" + input, "ig"),
-        suggestions = [];
-    for (var cmd in cmds) {
-        if (cmds.hasOwnProperty(cmd) && cmd.match(re)) {
-            suggestions.push(cmd);
-        }
+    let inputArray = input.split(" ")
+    if (inputArray.length > 1) {
+      return autoCompleteFiles(inputArray)
+    } else if (inputArray.length == 1) {
+      return autoCompleteCommands(input.replace(/\s+/g, ""))
+    } else {
+      // don't do anything for now
     }
+  }
+
+  autoCompleteCommands(input) {
+    var cmds = self.commands,
+      re = new RegExp("^" + input, "ig"),
+      suggestions = [];
+    for (var cmd in cmds) {
+      if (cmds.hasOwnProperty(cmd) && cmd.match(re)) {
+        suggestions.push(cmd);
+      }
+    }
+    return suggestions;
+  }
+
+  autoCompleteFiles(inputArray) {
+    // first I'll make it work with one match
+    // need to get all files in the current directory, 
+    // and then if any of them match the last element of inputArray
+    suggestions = [];
     return suggestions;
   }
 
@@ -267,7 +286,7 @@ export class Terminal {
     elem.addEventListener("keydown", (event) => {
       if (event.keyCode == KEY_CODE_MAP.KEY_TAB) {
         var prompt = event.target;
-        var suggestions = this.autoCompleteInput(prompt.textContent.replace(/\s+/g, ""));
+        var suggestions = this.autoCompleteInput(prompt.textContent);
 
         if (suggestions.length == 1) {
           prompt.textContent = suggestions[0];
