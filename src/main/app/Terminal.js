@@ -201,14 +201,19 @@ export class Terminal {
 
   autoCompleteFiles(inputArray) {
     suggestions = [];
+    const suggestions = [];
     const { listingUnit } = TerminalUtilities.getFsUnit(["ls"])
     const names = listingUnit.content.map((element) => {
       return element.name
     })
     const re = new RegExp("^" + inputArray[1], "ig")
+    const re = new RegExp("^" + inputArray[inputArray.length - 1], "ig")
     for (let name of names) {
       if (name.match(re)) {
         suggestions.push([inputArray[0], name].join(" "))
+        let promptElements = inputArray.slice(0, inputArray.length - 1)
+        promptElements.push(name)
+        suggestions.push(promptElements.join(" "))
       }
     }
     return suggestions;
