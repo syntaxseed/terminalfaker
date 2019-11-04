@@ -21,7 +21,7 @@ meaningful and helpful.
 3. If you have many commits in your PR, please rebase and squash them together.
 4. If the main project has been updated you may need to rebase your PR onto master.
 5. Check other PRs for conflicts with your own.
-6. Increase the version number found in terminal.js. Use SemVer.
+6. Increase the version number found in `main/version.js`. Use SemVer.
 
 ### Help With PRs and Git
 

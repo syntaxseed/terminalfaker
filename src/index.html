@@ -37,35 +37,21 @@
 
     <div id="terminal">
         <p class="hidden">
-            <span class="prompt"></span>
+           <span class="prompt"></span>
            <span contenteditable="true" class="input" autocorrect="off" autocapitalize="none" autocomplete="off"> </span>
         </p>
     </div>
 
-    <!-- TODO: Minify and combine the following 'internal' files: -->
-    <script src="js/src/filesystem-utilities.js"></script>
-    <script src="js/src/cmd-utilities.js"></script>
-    <script src="js/src/crypto.js"></script>
-    <script src="js/src/terminal.js"></script>
-    <script src="js/src/boot.js"></script>
-    <script src="js/src/system.js"></script>
-
-    <!-- Customizable files: -->
-    <script src="js/filesystem.js"></script>
-    <script src="js/commands.js"></script>
-
+    <!-- Terminal Faker Configuration -->
     <script>
-        // ** Terminal Configuration: **
-
-        // Whether to use the longer boot load screen. If this is missing, defaults to true.
-        var useBootLoader = true;
-
-        // Set the command prompt style:
-        var customPrompt = function () { return "guest@TermFake ("+Terminal.path+") $ ";};
-
-        // Initialize & show the terminal:
-        var term = Terminal.init(document.getElementById("terminal"), commands, customPrompt, initialFilesystem);
+        var TF_CONFIG_BOOT_LOADER = true;         // Whether to show the longer boot loading startup message.
+        var TF_CONFIG_ELEMENT_ID = "terminal";    // Id of the Div to create the terminal in. Should be defined above.
     </script>
 
+    <!-- Global Custom Definitions -->
+    <script src="js/customCommands.js"></script>
+
+    <!-- Minified Build -->
+    <script src="js/bundle.min.js"></script>
 </body>
 </html>

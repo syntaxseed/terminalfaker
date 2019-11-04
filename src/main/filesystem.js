@@ -3,7 +3,11 @@
 // Here we create initial file system structure. Changes are saved to LocalStorage.
 // System is reset to this on 'reboot' command.
 
-var initialFilesystem = new FileSystem();
+import { FileSystem } from './components/fs/FileSystem';
+import { FsDir } from './components/fs/FsDir';
+import { FsFile } from './components/fs/FsFile';
+
+export const initialFilesystem = new FileSystem();
 
 initialFilesystem
   .add(new FsDir('.tmp-dir'), [])
@@ -55,7 +59,3 @@ initialFilesystem
 
 initialFilesystem
   .add(new FsFile('cool.txt', 'There is a hidden command in this terminal called \'secret\'.'), []);
-
-
-// Creation of initial filesystem in xml:
-var originalFilesystemXML = fsToXML(initialFilesystem);

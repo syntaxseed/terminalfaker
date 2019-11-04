@@ -1,0 +1,16 @@
+{
+  "name": "terminalfaker",
+  "version": "1.0.0",
+  "repository": "git@github.com:syntaxseed/terminalfaker.git",
+  "author": "Djamal <nyarly51@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "build": "webpack",
+    "build-dev": "webpack --watch"
+  },
+  "devDependencies": {
+    "webpack": "4.41.0",
+    "webpack-cli": "3.3.9"
+  }
+}
