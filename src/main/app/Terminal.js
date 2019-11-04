@@ -189,12 +189,11 @@ export class Terminal {
 
   autoCompleteCommands(input) {
     const suggestions = [];
-    const cmds = self.commands
+    const commands = this.commands
     const re = new RegExp("^" + input, "ig")
-
-    for (var cmd in cmds) {
-      if (cmds.hasOwnProperty(cmd) && cmd.match(re)) {
-        suggestions.push(cmd);
+    for (var command in commands) {
+      if (commands.hasOwnProperty(command) && command.match(re)) {
+        suggestions.push(command);
       }
     }
     return suggestions;
@@ -210,8 +209,6 @@ export class Terminal {
     for (let name of names) {
       if (name.match(re)) {
         suggestions.push([inputArray[0], name].join(" "))
-        let promptElements = inputArray.slice(0, inputArray.length - 1)
-        promptElements.push(name)
       }
     }
     return suggestions;
