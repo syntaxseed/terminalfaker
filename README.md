@@ -17,7 +17,7 @@ An extensible pseudo-terminal in Javascript.
 
 # What's this?
 
-A pure native Javascript, mobile-friendly, Linux-like terminal simulation for use in a browser. There is a **[live demo here](https://syntaxseed.github.io/terminalfaker/)**.
+A pure native Javascript, mobile-friendly, Linux-like terminal simulation for use in a browser. There is a **[live demo here](https://syntaxseed.github.io/terminalfaker/src/)**.
 
 Originally forked from [AVGP/terminal.js](https://github.com/AVGP/terminal.js).
 
