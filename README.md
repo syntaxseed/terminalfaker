@@ -35,44 +35,38 @@ The easiest way to get started is to use the included "index.html" file and modi
 
 1. Include the "terminal.css" and the javascript files.
 2. Have a container element (e.g. a div) with a child element holding a contenteditable element of class "input" and another span of class "prompt" with the actual prompt line you want to display.
-3. Create an object with methods that will be your commands (see below for the details of how this works).
-4. Call terminal.init and pass the container element, your commands object, and a callback which creates the custom prompt. - **Ready to roll!**
+3. Create an object with methods that will be your custom commands (see below for the details of how this works).
+4. Include the minified bundle. - **Ready to roll!**
 
-Here's a **minimal** example with one command:
+Here's a **minimal** example with one custom command:
 
 ```html
-    <div id="terminal">
-        <p id="boot">Type 'help' to get started.</p>
+   <div id="terminal">
         <p class="hidden">
             <span class="prompt"></span>
-            <span contenteditable="true" class="input" autocorrect="off" autocapitalize="none" autocomplete="off"> </span>
+           <span contenteditable="true" class="input" autocorrect="off" autocapitalize="none" autocomplete="off"> </span>
         </p>
     </div>
 
-    <script src="js/src/filesystem-utilities.js"></script>
-    <script src="js/src/cmd-utilities.js"></script>
-    <script src="js/src/crypto.js"></script>
-    <script src="js/src/terminal.js"></script>
-    <script src="js/src/boot.js"></script>
-    <script src="js/src/system.js"></script>
-
-    <script src="js/filesystem.js"></script>
-
+     <!-- Configuration -->
     <script>
-    var commands = {};
-    commands.cow = {
+        const TF_CONFIG_BOOT_LOADER = true;         // Whether to show the longer boot loading startup message.
+        const TF_CONFIG_ELEMENT_ID = "terminal";    // Id of the Div to create the terminal in. Should be defined above.
+    </script>
+
+    <!-- Global Custom Definitions -->
+    <script>
+    var customCommands = {};
+    customCommands.cow = {
             about:  "What does the cow say?",
             exe:  function() {
                 return "Moooooo!";
             }
     };
-
-    // Set the command prompt style:
-    var customPrompt = function () { return "guest@TerminalFaker $ ";};
-
-    // Initialize the terminal:
-    var term = Terminal.init(document.getElementById("terminal"), commands, customPrompt, initialFilesystem);
     </script>
+
+    <!-- Minified build -->
+    <script src="js/bundle.min.js"></script>
 ```
 
 ## Extensible command interface
@@ -80,16 +74,16 @@ Here's a **minimal** example with one command:
 The terminal is only a way to interact with "commands" and "commands" are a bundles of functionality.
 So to use the terminal, you'll need to create a bunch of functions that actually do something - and that's not hard.
 
-First we modify our minimal example to load in custom commands found in "js/commands.js".
+First we modify our minimal example to load in custom commands found in "js/customCommands.js".
 
 ```html
   ...
-    <script src="js/filesystem.js"></script>
+    <!-- Global Custom Definitions -->
     <script src="js/customCommands.js"></script>
   ...
 ```
 
-Then, in commands.js we will define custom commands (there are a couple examples in there already for you).
+Then, in customCommands.js we will define custom commands (there are a couple examples in there already for you).
 
 ### A greeting command
 
@@ -100,7 +94,7 @@ $ hello Alice
 Hi there, Alice
 ```
 
-In commands.js this is done by creating a "customCommands" object and adding a "hello" object to it with an "about" property and a "exe" property.
+In customCommands.js this is done by creating a "customCommands" object and adding a "hello" object to it with an "about" property and a "exe" property.
 
 "customCommands.hello.about" will contain a string of the help info to display if the user types ``help hello``.
 
@@ -133,7 +127,7 @@ That's it! Now the commands defined in "commands.js" will extend (and overwrite 
 
 ## Custom boot message
 
-A boot up message is simulated including delayed line-by line display of the boot text. This message is found in "js/boot.js" and is used by including the file *after* "terminal.js" is included. Your terminal div must contain an element with id of "boot". If you don't want this, just remove the "boot.js" file include. Or, if you are using the minified bundle of js, just set a variable: ``var useBootLoader = false;`` in your javascript.
+A boot up message is simulated including delayed line-by line display of the boot text. Your terminal div must contain an element with id of "boot". This message is found in "main/boot.js" and is included via WebPack. To customize this message you will need to rebuild the minified bundle with WebPack. If you don't want this, set the configuration variable: ``var TF_CONFIG_BOOT_LOADER = false; `` in your javascript.
 
 Note that this will over-write any text already in the element with id "boot".
 
@@ -141,7 +135,7 @@ Note that this will over-write any text already in the element with id "boot".
 
 ![Basic Filesystem](media/screenshot2.png)
 
-A simulated filesystem is initialized from the default content found in js/filesystem.js. Basic navigation around the filesystem is available. You can edit this file to customize the contents.
+A simulated filesystem is initialized from the default content found in main/filesystem.js. Basic navigation around the filesystem is available. You can edit this file to customize the contents, then rebuild with WebPack.
 
 ## Advanced Example
 
@@ -153,20 +147,29 @@ To see a full example including loading in system commands and the nicer boot me
 
 * Basic filesystem (in progress).
 * Editing of files, mkdir, rmdir, etc.
+* See [GitHub issues](https://github.com/syntaxseed/terminalfaker/issues) page.
 
 ## Contributing
 
 See the [Contributing Guide](CONTRIBUTING.md). Pull requests for existing issues are welcome. For other or major changes, please open an issue first to discuss what you would like to change.
 
-### For developer
+### For Developers
 
-```
+Terminal Faker uses node packages, namely WebPack to create the minified JS bundle and to transpile the Javascript. When you first download the TerminalFaker source code, you must install the Node packages (make sure you have Node and NPM installed):
+
+```bash
     npm install
+```
+
+If you have edited the Javascript files, build a new minified bundle with the following command:
+
+```bash
     npm run build
 ```
 
-To start `webpack` in watch mode run:
-```
+To start `webpack` in watch mode run (automatically builds edited files):
+
+```bash
     npm run build-dev
 ```
 

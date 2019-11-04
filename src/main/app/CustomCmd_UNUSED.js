@@ -1,6 +1,11 @@
 import { TerminalCommands } from './Cmd';
 
 /**
+ * TODO - This file is unused. A more OO definition of the commands found in /js/customCommands.js was started but never used.
+ */
+
+
+/**
  * Custom Terminal Commands
  * In this file, define custom commands for your terminal application.
  * This will overwrite any built-in system commands if they exist.

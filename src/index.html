@@ -37,14 +37,21 @@
 
     <div id="terminal">
         <p class="hidden">
-            <span class="prompt"></span>
+           <span class="prompt"></span>
            <span contenteditable="true" class="input" autocorrect="off" autocapitalize="none" autocomplete="off"> </span>
         </p>
     </div>
-    <!-- Global variables -->
-    <script src="js/filesystem.js"></script>
+
+    <!-- Terminal Faker Configuration -->
+    <script>
+        var TF_CONFIG_BOOT_LOADER = true;         // Whether to show the longer boot loading startup message.
+        var TF_CONFIG_ELEMENT_ID = "terminal";    // Id of the Div to create the terminal in. Should be defined above.
+    </script>
+
+    <!-- Global Custom Definitions -->
     <script src="js/customCommands.js"></script>
-    <!-- Minified build -->
+
+    <!-- Minified Build -->
     <script src="js/bundle.min.js"></script>
 </body>
 </html>

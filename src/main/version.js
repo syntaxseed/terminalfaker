@@ -1,1 +1,1 @@
-export const version = '1.5.1';  // Used in various commands.
+export const version = '1.6.0';  // Used in various commands.
