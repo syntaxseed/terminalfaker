@@ -177,20 +177,21 @@ export class Terminal {
   }
 
   autoCompleteInput(input) {
-    let inputArray = input.split(" ")
+    const inputArray = input.split(" ")
     if (inputArray.length > 1) {
-      return autoCompleteFiles(inputArray)
+      return this.autoCompleteFiles(inputArray)
     } else if (inputArray.length == 1) {
-      return autoCompleteCommands(input.replace(/\s+/g, ""))
+      return this.autoCompleteCommands(input.replace(/\s+/g, ""))
     } else {
       return [];
     }
   }
 
   autoCompleteCommands(input) {
-    var cmds = self.commands,
-      re = new RegExp("^" + input, "ig"),
-      suggestions = [];
+    const suggestions = [];
+    const cmds = self.commands
+    const re = new RegExp("^" + input, "ig")
+
     for (var cmd in cmds) {
       if (cmds.hasOwnProperty(cmd) && cmd.match(re)) {
         suggestions.push(cmd);
@@ -200,20 +201,17 @@ export class Terminal {
   }
 
   autoCompleteFiles(inputArray) {
-    suggestions = [];
     const suggestions = [];
-    const { listingUnit } = TerminalUtilities.getFsUnit(["ls"])
+    const { listingUnit } = this.getFsUnit(["ls"])
     const names = listingUnit.content.map((element) => {
       return element.name
     })
-    const re = new RegExp("^" + inputArray[1], "ig")
     const re = new RegExp("^" + inputArray[inputArray.length - 1], "ig")
     for (let name of names) {
       if (name.match(re)) {
         suggestions.push([inputArray[0], name].join(" "))
         let promptElements = inputArray.slice(0, inputArray.length - 1)
         promptElements.push(name)
-        suggestions.push(promptElements.join(" "))
       }
     }
     return suggestions;
