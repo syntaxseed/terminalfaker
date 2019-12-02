@@ -1,7 +1,7 @@
 import { TerminalCommands } from './Cmd';
 
 /**
- * TODO - This file is unused. A more OO definition of the commands found in /js/customCommands.js was started but never used.
+ * TODO - This file is unused. This is a more object oriented definition of the commands found in /js/customCommands.js. This was started but never used.
  */
 
 
