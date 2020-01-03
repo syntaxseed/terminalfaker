@@ -189,10 +189,20 @@ export class Terminal {
 
   autoCompleteCommands(input) {
     const suggestions = [];
-    const commands = this.commands
+    const customCommands = this.commands
+
     const re = new RegExp("^" + input, "ig")
-    for (var command in commands) {
-      if (commands.hasOwnProperty(command) && command.match(re)) {
+    for (let command in customCommands) {
+      if(customCommands.hasOwnProperty(command) && command.match(re)) {
+        suggestions.push(command);
+      }
+    }
+
+    const prototype = Object.getPrototypeOf(this.commands)
+    const prototypeCommands = Object.getOwnPropertyNames(prototype)
+    
+    for(let command of prototypeCommands){
+      if(prototype.hasOwnProperty(command) && command.match(re)){
         suggestions.push(command);
       }
     }
