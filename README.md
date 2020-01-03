@@ -190,12 +190,14 @@ To start `webpack` in watch mode run (automatically builds edited files):
 
 ### Contributors
 
+Many thanks to the many who have contributed to this project (in no particular order):
+
 * **Ben Brunton** - [benbrunton](https://github.com/benbrunton)
 * **Sahil Bondre** - [godcrampy](https://github.com/godcrampy)
 * **LapinoLapidus** - [LapinoLapidus](https://github.com/LapinoLapidus)
 * **Dzhamal Eziev** - [deziev](https://github.com/deziev)
 * **Jacob Shu** - [jacob-shu](https://github.com/jacob-shu)
-* **John Nenniger** = [John-Nenniger](https://github.com/John-Nenniger)
+* **John Nenniger** - [John-Nenniger](https://github.com/John-Nenniger)
 
 ## License
 
