@@ -195,6 +195,7 @@ To start `webpack` in watch mode run (automatically builds edited files):
 * **LapinoLapidus** - [LapinoLapidus](https://github.com/LapinoLapidus)
 * **Dzhamal Eziev** - [deziev](https://github.com/deziev)
 * **Jacob Shu** - [jacob-shu](https://github.com/jacob-shu)
+* **John Nenniger** = [John-Nenniger](https://github.com/John-Nenniger)
 
 ## License
 
