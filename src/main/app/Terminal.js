@@ -177,13 +177,49 @@ export class Terminal {
   }
 
   autoCompleteInput(input) {
-    var cmds = this.commands,
-        re = new RegExp("^" + input, "ig"),
-        suggestions = [];
-    for (var cmd in cmds) {
-        if (cmds.hasOwnProperty(cmd) && cmd.match(re)) {
-            suggestions.push(cmd);
-        }
+    const inputArray = input.split(" ")
+    if (inputArray.length > 1) {
+      return this.autoCompleteFiles(inputArray)
+    } else if (inputArray.length == 1) {
+      return this.autoCompleteCommands(input.replace(/\s+/g, ""))
+    } else {
+      return [];
+    }
+  }
+
+  autoCompleteCommands(input) {
+    const suggestions = [];
+    const customCommands = this.commands
+
+    const re = new RegExp("^" + input, "ig")
+    for (let command in customCommands) {
+      if(customCommands.hasOwnProperty(command) && command.match(re)) {
+        suggestions.push(command);
+      }
+    }
+
+    const prototype = Object.getPrototypeOf(this.commands)
+    const prototypeCommands = Object.getOwnPropertyNames(prototype)
+    
+    for(let command of prototypeCommands){
+      if(prototype.hasOwnProperty(command) && command.match(re)){
+        suggestions.push(command);
+      }
+    }
+    return suggestions;
+  }
+
+  autoCompleteFiles(inputArray) {
+    const suggestions = [];
+    const { listingUnit } = this.getFsUnit(["ls"])
+    const names = listingUnit.content.map((element) => {
+      return element.name
+    })
+    const re = new RegExp("^" + inputArray[inputArray.length - 1], "ig")
+    for (let name of names) {
+      if (name.match(re)) {
+        suggestions.push([inputArray[0], name].join(" "))
+      }
     }
     return suggestions;
   }
@@ -267,7 +303,7 @@ export class Terminal {
     elem.addEventListener("keydown", (event) => {
       if (event.keyCode == KEY_CODE_MAP.KEY_TAB) {
         var prompt = event.target;
-        var suggestions = this.autoCompleteInput(prompt.textContent.replace(/\s+/g, ""));
+        var suggestions = this.autoCompleteInput(prompt.textContent);
 
         if (suggestions.length == 1) {
           prompt.textContent = suggestions[0];
