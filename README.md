@@ -17,7 +17,7 @@ An extensible pseudo-terminal in Javascript.
 
 # What's this?
 
-A pure native Javascript, mobile-friendly, Linux-like terminal simulation for use in a browser. There is a **[live demo here](https://syntaxseed.github.io/terminalfaker/src/)**.
+A pure Javascript, mobile-friendly, Linux-like terminal simulation for use in a browser. There is a **[live demo here](https://syntaxseed.github.io/terminalfaker/src/)**.
 
 Originally forked from [AVGP/terminal.js](https://github.com/AVGP/terminal.js).
 
@@ -27,7 +27,17 @@ You can do a bunch of things with it:
 - Create a terminal emulator for something that exposes an interface in a browser-consumable way (CORS, Websocket, WebRTC, ...).
 - Create a text-based adventure game in the browser.
 - Create an educational tool for learning command line applications.
+- Create a terminal style collection of docs.
 - Etc.
+
+## Features
+
+- A terminal-like look and feel.
+- Built in set of basic common commands.
+- Autocomplete on commands and files/paths.
+- Built in help for commands.
+- Customizable boot message.
+- Editable file of custom commands.
 
 ## How do I use it?
 
