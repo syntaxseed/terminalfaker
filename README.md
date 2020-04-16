@@ -28,6 +28,10 @@ You can do a bunch of things with it:
 - Create an educational tool for learning command line applications.
 - Etc.
 
+## NOTE: What Happened To WebPack?
+
+Past contributors and users might notice that I have reverted much of what was done to this project over the last year. I greatly apprecitate the many users who contributed updates, especially during Hacktoberfest 2019, however it resulted in this project gaining complexity and dependencies putting it way beyond my ability to understand it or work on it (I'm not primarily a JS dev). The addition of WebPack and other dependencies also meant I was getting security vulnerability warnings on the project frequently. It also became VERY difficult to customize the default filesystem because one contributor had removed the xml format for this. As a result of all these factors, I decided to revert the project to a state where I can understand and work on it. Users who wish to continue with the old version of the project - which had many improvements along with the added complexity and dependencies - can fork the project from the tag "v1.6.4.OLDVERSION". I may slowly add these advanced features and WebPack back into the project in the future, but I'll do it as I learn these myself. Sorry to everyone who spent time contributing.
+
 ## How do I use it?
 
 The easiest way to get started is to use the included "index.html" file and modify it for your needs. The basic usage is:
