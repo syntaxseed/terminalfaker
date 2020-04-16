@@ -29,7 +29,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
  * www.movable-type.co.uk/scripts/xtea.pdf  - Tea extensions (1997)
  * www.movable-type.co.uk/scripts/xxtea.pdf - Correction to xtea (1998)
  */
-export var Tea =
+var Tea =
 /*#__PURE__*/
 function () {
   function Tea() {
