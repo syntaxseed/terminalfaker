@@ -8,7 +8,7 @@ Terminal Faker
         alt="Javascript: ES5"><br>
     <a href="https://twitter.com/intent/follow?screen_name=syntaxseed">
         <img src="https://img.shields.io/twitter/follow/syntaxseed.svg?style=social&logo=twitter"
-            alt="follow on Twitter"></a>&nbsp;&nbsp;<a href="https://syntaxseed.com/about/donate"><img src="https://img.shields.io/badge/Sponsor-Project-blue" alt="Sponsor Project" /></a>
+            alt="follow on Twitter"></a>&nbsp;&nbsp;<a href="https://github.com/syntaxseed#donatecontribute"><img src="https://img.shields.io/badge/Sponsor-Project-blue" alt="Sponsor Project" /></a>
 </div>
 
 ![Logo](favicon.png)
